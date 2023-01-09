@@ -3,7 +3,7 @@ using MultiPrecisionAlgebra;
 
 namespace MultiPrecisionCurveFitting {
     /// <summary>パデ近似</summary>
-    internal static class PadeSolver<N> where N : struct, IConstant {
+    public static class PadeSolver<N> where N : struct, IConstant {
         /// <summary>ソルバー</summary>
         /// <param name="cs">テイラー係数</param>
         /// <param name="m">分子係数</param>
