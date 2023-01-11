@@ -28,9 +28,9 @@ namespace MultiPrecisionCurveFitting.Tests {
                 ys[i] = fitting_func(xs[i], p);
             }
 
-            LevenbergMarquardtFitter<Pow2.N8> fitting = new(xs, ys, new FittingFunction<Pow2.N8>(2, fitting_func, fitting_diff_func));
+            LevenbergMarquardtFitter<Pow2.N8> fitter = new(xs, ys, new FittingFunction<Pow2.N8>(2, fitting_func, fitting_diff_func));
 
-            var v = fitting.ExecuteFitting(new Vector<Pow2.N8>(new MultiPrecision<Pow2.N8>[] { 7, 2 }), iter: 256);
+            var v = fitter.ExecuteFitting(new Vector<Pow2.N8>(new MultiPrecision<Pow2.N8>[] { 7, 2 }), iter: 256);
 
             Assert.IsTrue((v - p).Norm < 1e-40);
         }

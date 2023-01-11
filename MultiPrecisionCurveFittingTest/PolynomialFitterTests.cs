@@ -18,11 +18,11 @@ namespace MultiPrecisionCurveFitting.Tests {
                 ys2[i] = p2[0] * x + p2[1] * x * x + p2[2] * x * x * x;
             }
 
-            PolynomialFitter<Pow2.N8> fitting1 = new(xs, ys1, 3, enable_intercept: true);
-            PolynomialFitter<Pow2.N8> fitting2 = new(xs, ys2, 3, enable_intercept: false);
+            PolynomialFitter<Pow2.N8> fitter1 = new(xs, ys1, 3, enable_intercept: true);
+            PolynomialFitter<Pow2.N8> fitter2 = new(xs, ys2, 3, enable_intercept: false);
 
-            Assert.IsTrue((fitting1.ExecuteFitting() - p1).Norm < 1e-48);
-            Assert.IsTrue((fitting2.ExecuteFitting() - p2).Norm < 1e-48);
+            Assert.IsTrue((fitter1.ExecuteFitting() - p1).Norm < 1e-48);
+            Assert.IsTrue((fitter2.ExecuteFitting() - p2).Norm < 1e-48);
         }
     }
 }
