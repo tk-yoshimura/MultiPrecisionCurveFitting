@@ -19,7 +19,7 @@ namespace MultiPrecisionCurveFitting {
         }
 
         /// <summary>フィッティング</summary>
-        public Vector<N> ExecuteFitting(Vector<N> parameters, double lambda = 0.75, int iter = 256) {
+        public Vector<N> ExecuteFitting(Vector<N> parameters, double lambda = 0.75, int iter = 256, Func<Vector<N>, bool>? iter_callback = null) {
             Vector<N> errors, dparam;
             Matrix<N> jacobian;
 
@@ -33,6 +33,12 @@ namespace MultiPrecisionCurveFitting {
                 }
 
                 parameters -= dparam * lambda;
+
+                if (iter_callback is not null) {
+                    if (!iter_callback(parameters)) {
+                        break;
+                    }
+                }
             }
 
             return parameters;

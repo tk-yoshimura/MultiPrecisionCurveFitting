@@ -19,11 +19,11 @@ namespace MultiPrecisionCurveFitting {
         }
 
         /// <summary>フィッティング</summary>
-        public Vector<N> ExecuteFitting(Vector<N> parameters, double lambda_init = 1, double lambda_decay = 0.9, int iter = 256) {
+        public Vector<N> ExecuteFitting(Vector<N> parameters, double lambda_init = 1, double lambda_decay = 0.9, int iter = 256, Func<Vector<N>, bool>? iter_callback = null) {
             Vector<N> errors, dparam;
             Matrix<N> jacobian, jacobian_transpose;
 
-            double lambda = lambda_init;
+            MultiPrecision<N> lambda = lambda_init;
 
             for (int j = 0; j < iter; j++) {
                 errors = Error(parameters);
@@ -39,6 +39,12 @@ namespace MultiPrecisionCurveFitting {
                 parameters -= dparam;
 
                 lambda *= lambda_decay;
+
+                if (iter_callback is not null) {
+                    if (!iter_callback(parameters)) {
+                        break;
+                    }
+                }
             }
 
             return parameters;

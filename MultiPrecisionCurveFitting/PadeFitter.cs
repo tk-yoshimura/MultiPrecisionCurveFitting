@@ -51,7 +51,7 @@ namespace MultiPrecisionCurveFitting {
         }
 
         /// <summary>フィッティング</summary>
-        public Vector<N> ExecuteFitting(double lambda_init = 0.5, double lambda_decay = 0.975, int iter = 256) {
+        public Vector<N> ExecuteFitting(double lambda_init = 0.25, double lambda_decay = 0.995, int iter = 256, Func<Vector<N>, bool>? iter_callback = null) {
             Vector<N> poly = new PolynomialFitter<N>(
                 X, Y.Select((v) => v - Intercept).ToArray(),
                 Numer + Denom - 2, enable_intercept: false).ExecuteFitting();
@@ -89,13 +89,26 @@ namespace MultiPrecisionCurveFitting {
                 return gms.Concat(gns).ToArray();
             }
 
+            bool callback(Vector<N> parameters) {
+                if (iter_callback is not null) {
+                    parameters = (new MultiPrecision<N>[] { Intercept })
+                         .Concat(((MultiPrecision<N>[])parameters)[..(Numer - 1)])
+                         .Concat(new MultiPrecision<N>[] { 1 })
+                         .Concat(((MultiPrecision<N>[])parameters)[(Numer - 1)..]).ToArray();
+
+                    return iter_callback(parameters);
+                }
+
+                return true;
+            }
+
             LevenbergMarquardtFitter<N> fitter = new(X, Y, new FittingFunction<N>(Numer + Denom - 2, fitting_func, fitting_diff_func));
-            MultiPrecision<N>[] parameters = fitter.ExecuteFitting(ms.Concat(ns).ToArray(), lambda_init, lambda_decay, iter);
+            MultiPrecision<N>[] parameters = fitter.ExecuteFitting(ms.Concat(ns).ToArray(), lambda_init, lambda_decay, iter, callback);
 
             parameters = (new MultiPrecision<N>[] { Intercept })
-                         .Concat(parameters[..ms.Length])
+                         .Concat(parameters[..(Numer - 1)])
                          .Concat(new MultiPrecision<N>[] { 1 })
-                         .Concat(parameters[ms.Length..]).ToArray();
+                         .Concat(parameters[(Numer - 1)..]).ToArray();
 
             return parameters;
         }
