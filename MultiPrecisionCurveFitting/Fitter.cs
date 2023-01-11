@@ -67,12 +67,8 @@ namespace MultiPrecisionCurveFitting {
 
             Vector<N> errors = Vector<N>.Zero(Points);
 
-            Vector<N> approxs = Vector<N>.Zero(Points);
-
             for (int i = 0; i < Points; i++) {
                 errors[i] = FittingValue(X[i], parameters) - Y[i];
-
-                approxs[i] = FittingValue(X[i], parameters);
             }
 
             return errors;

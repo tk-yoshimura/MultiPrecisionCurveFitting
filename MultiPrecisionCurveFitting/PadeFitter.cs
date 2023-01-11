@@ -37,7 +37,7 @@ namespace MultiPrecisionCurveFitting {
             MultiPrecision<N> y = coefs[^1];
 
             for (int i = coefs.Length - 2; i >= 0; i--) {
-                y = y * x + coefs[i];
+                y = x * y + coefs[i];
             }
 
             return y;
@@ -52,9 +52,10 @@ namespace MultiPrecisionCurveFitting {
 
         /// <summary>フィッティング</summary>
         public Vector<N> ExecuteFitting(double lambda_init = 0.5, double lambda_decay = 0.975, int iter = 256) {
-            MultiPrecision<N>[] vs = Y.Select(v => v - Intercept).ToArray();
-            Vector<N> poly = new PolynomialFitter<N>(X, vs, Numer + Denom - 2, enable_intercept: false).ExecuteFitting();
-            poly = (new MultiPrecision<N>[] { 0 }).Concat((MultiPrecision<N>[])poly).ToArray();
+            Vector<N> poly = new PolynomialFitter<N>(
+                X, Y.Select((v) => v - Intercept).ToArray(),
+                Numer + Denom - 2, enable_intercept: false).ExecuteFitting();
+            poly = (new MultiPrecision<N>[] { Intercept }).Concat((MultiPrecision<N>[])poly).ToArray();
 
             (MultiPrecision<N>[] ms, MultiPrecision<N>[] ns) = PadeSolver<N>.Solve(poly, Numer - 1, Denom - 1);
             (ms, ns) = (ms[1..].ToArray(), ns[1..].ToArray());
@@ -62,8 +63,8 @@ namespace MultiPrecisionCurveFitting {
             MultiPrecision<N> fitting_func(MultiPrecision<N> x, Vector<N> parameters) {
                 (MultiPrecision<N> numer, MultiPrecision<N> denom) = Fraction(x, parameters, Numer - 1);
 
-                numer *= x;
-                denom = 1 + x * denom;
+                numer = x * numer + Intercept;
+                denom = x * denom + 1;
 
                 return numer / denom;
             }
@@ -71,8 +72,8 @@ namespace MultiPrecisionCurveFitting {
             Vector<N> fitting_diff_func(MultiPrecision<N> x, Vector<N> parameters) {
                 (MultiPrecision<N> numer, MultiPrecision<N> denom) = Fraction(x, parameters, Numer - 1);
 
-                numer *= x;
-                denom = 1 + x * denom;
+                numer = x * numer + Intercept;
+                denom = x * denom + 1;
 
                 MultiPrecision<N>[] gms = new MultiPrecision<N>[Numer - 1], gns = new MultiPrecision<N>[Denom - 1];
                 gms[0] = x / denom;
@@ -88,12 +89,12 @@ namespace MultiPrecisionCurveFitting {
                 return gms.Concat(gns).ToArray();
             }
 
-            LevenbergMarquardtFitter<N> fitter = new(X, vs, new FittingFunction<N>(Numer + Denom - 2, fitting_func, fitting_diff_func));
+            LevenbergMarquardtFitter<N> fitter = new(X, Y, new FittingFunction<N>(Numer + Denom - 2, fitting_func, fitting_diff_func));
             MultiPrecision<N>[] parameters = fitter.ExecuteFitting(ms.Concat(ns).ToArray(), lambda_init, lambda_decay, iter);
 
             parameters = (new MultiPrecision<N>[] { Intercept })
                          .Concat(parameters[..ms.Length])
-                         .Concat((new MultiPrecision<N>[] { 1 }))
+                         .Concat(new MultiPrecision<N>[] { 1 })
                          .Concat(parameters[ms.Length..]).ToArray();
 
             return parameters;
