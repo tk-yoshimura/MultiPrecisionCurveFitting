@@ -6,10 +6,10 @@ namespace MultiPrecisionCurveFitting {
     /// <summary>重み付き線形フィッティング</summary>
     public class WeightedLinearFitter<N> : Fitter<N> where N : struct, IConstant {
 
-        readonly IReadOnlyList<double> weights;
+        readonly IReadOnlyList<MultiPrecision<N>> weights;
 
         /// <summary>コンストラクタ</summary>
-        public WeightedLinearFitter(IReadOnlyList<MultiPrecision<N>> xs, IReadOnlyList<MultiPrecision<N>> ys, IReadOnlyList<double> weights, bool enable_intercept)
+        public WeightedLinearFitter(IReadOnlyList<MultiPrecision<N>> xs, IReadOnlyList<MultiPrecision<N>> ys, IReadOnlyList<MultiPrecision<N>> weights, bool enable_intercept)
             : base(xs, ys, enable_intercept ? 2 : 1) {
 
             EnableIntercept = enable_intercept;
@@ -93,7 +93,7 @@ namespace MultiPrecisionCurveFitting {
                 MultiPrecision<N> a = (sum_wx * sum_wxy - sum_wxx * sum_wy) * r;
                 MultiPrecision<N> b = (sum_wx * sum_wy - sum_w * sum_wxy) * r;
 
-                return new Vector<N>(new MultiPrecision<N>[] { a, b });
+                return new Vector<N>(a, b);
             }
             else {
                 MultiPrecision<N> w, sum_wxx = 0, sum_wxy = 0;
@@ -106,7 +106,7 @@ namespace MultiPrecisionCurveFitting {
                     sum_wxy += w * x * y;
                 }
 
-                return new Vector<N>(new MultiPrecision<N>[] { sum_wxy / sum_wxx });
+                return new Vector<N>(sum_wxy / sum_wxx);
             }
         }
     }

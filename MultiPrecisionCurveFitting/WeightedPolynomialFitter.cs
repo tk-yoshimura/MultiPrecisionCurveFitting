@@ -6,10 +6,10 @@ namespace MultiPrecisionCurveFitting {
     /// <summary>重み付き多項式フィッティング</summary>
     public class WeightedPolynomialFitter<N> : Fitter<N> where N : struct, IConstant {
 
-        readonly IReadOnlyList<double> weights;
+        readonly IReadOnlyList<MultiPrecision<N>> weights;
 
         /// <summary>コンストラクタ</summary>
-        public WeightedPolynomialFitter(IReadOnlyList<MultiPrecision<N>> xs, IReadOnlyList<MultiPrecision<N>> ys, IReadOnlyList<double> weights, int degree, bool enable_intercept)
+        public WeightedPolynomialFitter(IReadOnlyList<MultiPrecision<N>> xs, IReadOnlyList<MultiPrecision<N>> ys, IReadOnlyList<MultiPrecision<N>> weights, int degree, bool enable_intercept)
             : base(xs, ys, checked(degree + (enable_intercept ? 1 : 0))) {
 
             this.Degree = degree;
@@ -84,7 +84,7 @@ namespace MultiPrecisionCurveFitting {
 
         /// <summary>フィッティング</summary>
         public Vector<N> ExecuteFitting() {
-            Matrix<N> m = new(Points, Parameters);
+            Matrix<N> m = Matrix<N>.Zero(Points, Parameters);
             Vector<N> b = Vector<N>.Zero(Points);
 
             if (EnableIntercept) {

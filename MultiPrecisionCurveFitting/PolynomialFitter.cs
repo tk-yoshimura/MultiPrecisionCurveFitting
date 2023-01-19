@@ -46,7 +46,7 @@ namespace MultiPrecisionCurveFitting {
 
         /// <summary>フィッティング</summary>
         public Vector<N> ExecuteFitting() {
-            Matrix<N> m = new(Points, Parameters);
+            Matrix<N> m = Matrix<N>.Zero(Points, Parameters);
             Vector<N> b = Vector<N>.Zero(Points);
 
             if (EnableIntercept) {

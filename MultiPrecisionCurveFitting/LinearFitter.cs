@@ -50,7 +50,7 @@ namespace MultiPrecisionCurveFitting {
                 MultiPrecision<N> a = (sum_x * sum_xy - sum_sq_x * sum_y) * r;
                 MultiPrecision<N> b = (sum_x * sum_y - n * sum_xy) * r;
 
-                return new Vector<N>(new MultiPrecision<N>[] { a, b });
+                return new Vector<N>(a, b);
             }
             else {
                 MultiPrecision<N> sum_sq_x = 0, sum_xy = 0;
@@ -62,7 +62,7 @@ namespace MultiPrecisionCurveFitting {
                     sum_xy += x * y;
                 }
 
-                return new Vector<N>(new MultiPrecision<N>[] { sum_xy / sum_sq_x });
+                return new Vector<N>(sum_xy / sum_sq_x);
             }
         }
     }

@@ -46,7 +46,7 @@ namespace MultiPrecisionCurveFitting {
 
         /// <summary>ヤコビアン行列</summary>
         private Matrix<N> Jacobian(Vector<N> parameters) {
-            Matrix<N> jacobian = new(Points, func.Parameters);
+            Matrix<N> jacobian = Matrix<N>.Zero(Points, func.Parameters);
 
             for (int i = 0, j; i < Points; i++) {
                 Vector<N> df = func.DiffF(X[i], parameters);

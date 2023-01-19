@@ -21,7 +21,7 @@ namespace MultiPrecisionCurveFitting {
 
             int k = m + n;
 
-            Matrix<N> a = new(k, k);
+            Matrix<N> a = Matrix<N>.Zero(k, k);
             Vector<N> c = cs[1..];
 
             for (int i = 0; i < m; i++) {
