@@ -4,7 +4,7 @@ using MultiPrecisionAlgebra;
 namespace MultiPrecisionCurveFitting {
     /// <summary>Gauss-Newton法</summary>
     public class GaussNewtonFitter<N> : Fitter<N> where N : struct, IConstant {
-        readonly FittingFunction<N> func;
+        private readonly FittingFunction<N> func;
 
         /// <summary>コンストラクタ</summary>
         public GaussNewtonFitter(IReadOnlyList<MultiPrecision<N>> xs, IReadOnlyList<MultiPrecision<N>> ys, FittingFunction<N> func)

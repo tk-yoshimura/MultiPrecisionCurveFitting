@@ -20,7 +20,7 @@ namespace MultiPrecisionCurveFitting.Tests {
             Assert.AreEqual(0.75, fitter.FittingValue(0, parameters));
 
             for (int i = 0; i < xs.Length; i++) {
-                Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.FittingValue(xs[i], parameters)) < 1e-5, 
+                Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.FittingValue(xs[i], parameters)) < 1e-5,
                     $"\nexpected : {ys[i]}\n actual  : {fitter.FittingValue(xs[i], parameters)}"
                 );
             }
@@ -39,7 +39,7 @@ namespace MultiPrecisionCurveFitting.Tests {
             Console.WriteLine($"Denom : {(Vector<Pow2.N8>)((MultiPrecision<Pow2.N8>[])parameters)[fitter.Numer..]}");
 
             for (int i = 0; i < xs.Length; i++) {
-                Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.FittingValue(xs[i], parameters)) < 1e-5, 
+                Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.FittingValue(xs[i], parameters)) < 1e-5,
                     $"\nexpected : {ys[i]}\n actual  : {fitter.FittingValue(xs[i], parameters)}"
                 );
             }
@@ -47,8 +47,8 @@ namespace MultiPrecisionCurveFitting.Tests {
 
         [TestMethod()]
         public void GenerateTableTest() {
-            (MultiPrecision<Pow2.N4> x, MultiPrecision<Pow2.N4> y)[] vs = new (MultiPrecision<Pow2.N4>, MultiPrecision<Pow2.N4>)[] { 
-                (2, 11), (3, 13), (5, 17), (7, 19) 
+            (MultiPrecision<Pow2.N4> x, MultiPrecision<Pow2.N4> y)[] vs = new (MultiPrecision<Pow2.N4>, MultiPrecision<Pow2.N4>)[] {
+                (2, 11), (3, 13), (5, 17), (7, 19)
             };
 
             MultiPrecision<Pow2.N4> s(int xn, int yn) {

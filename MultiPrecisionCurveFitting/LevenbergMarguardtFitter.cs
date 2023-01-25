@@ -4,7 +4,7 @@ using MultiPrecisionAlgebra;
 namespace MultiPrecisionCurveFitting {
     /// <summary>Levenberg-MarguardtMethod法</summary>
     public class LevenbergMarquardtFitter<N> : Fitter<N> where N : struct, IConstant {
-        readonly FittingFunction<N> func;
+        private readonly FittingFunction<N> func;
 
         /// <summary>コンストラクタ</summary>
         public LevenbergMarquardtFitter(IReadOnlyList<MultiPrecision<N>> xs, IReadOnlyList<MultiPrecision<N>> ys, FittingFunction<N> func)

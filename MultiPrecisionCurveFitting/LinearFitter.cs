@@ -5,6 +5,7 @@ namespace MultiPrecisionCurveFitting {
 
     /// <summary>線形フィッティング</summary>
     public class LinearFitter<N> : Fitter<N> where N : struct, IConstant {
+
         /// <summary>y切片を有効にするか</summary>
         public bool EnableIntercept { get; private set; }
 

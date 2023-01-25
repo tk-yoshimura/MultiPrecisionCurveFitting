@@ -5,13 +5,6 @@ namespace MultiPrecisionCurveFitting {
 
     /// <summary>多項式フィッティング</summary>
     public class PolynomialFitter<N> : Fitter<N> where N : struct, IConstant {
-        /// <summary>コンストラクタ</summary>
-        public PolynomialFitter(IReadOnlyList<MultiPrecision<N>> xs, IReadOnlyList<MultiPrecision<N>> ys, int degree, bool enable_intercept)
-            : base(xs, ys, checked(degree + (enable_intercept ? 1 : 0))) {
-
-            this.Degree = degree;
-            this.EnableIntercept = enable_intercept;
-        }
 
         /// <summary>次数</summary>
         public int Degree {
@@ -20,6 +13,14 @@ namespace MultiPrecisionCurveFitting {
 
         /// <summary>y切片を有効にするか</summary>
         public bool EnableIntercept { get; set; }
+
+        /// <summary>コンストラクタ</summary>
+        public PolynomialFitter(IReadOnlyList<MultiPrecision<N>> xs, IReadOnlyList<MultiPrecision<N>> ys, int degree, bool enable_intercept)
+            : base(xs, ys, checked(degree + (enable_intercept ? 1 : 0))) {
+
+            this.Degree = degree;
+            this.EnableIntercept = enable_intercept;
+        }
 
         /// <summary>フィッティング値</summary>
         public override MultiPrecision<N> FittingValue(MultiPrecision<N> x, Vector<N> coefficients) {

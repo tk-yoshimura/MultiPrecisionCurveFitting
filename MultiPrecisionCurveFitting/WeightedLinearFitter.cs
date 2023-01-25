@@ -6,7 +6,10 @@ namespace MultiPrecisionCurveFitting {
     /// <summary>重み付き線形フィッティング</summary>
     public class WeightedLinearFitter<N> : Fitter<N> where N : struct, IConstant {
 
-        readonly IReadOnlyList<MultiPrecision<N>> weights;
+        private readonly IReadOnlyList<MultiPrecision<N>> weights;
+
+        /// <summary>y切片を有効にするか</summary>
+        public bool EnableIntercept { get; private set; }
 
         /// <summary>コンストラクタ</summary>
         public WeightedLinearFitter(IReadOnlyList<MultiPrecision<N>> xs, IReadOnlyList<MultiPrecision<N>> ys, IReadOnlyList<MultiPrecision<N>> weights, bool enable_intercept)
@@ -14,25 +17,12 @@ namespace MultiPrecisionCurveFitting {
 
             EnableIntercept = enable_intercept;
 
-            if (weights is null) {
-                throw new ArgumentNullException(nameof(weights));
-            }
-
-            if (Points != weights.Count) {
-                throw new ArgumentException(null, $"{nameof(weights)}");
-            }
-
-            foreach (var weight in weights) {
-                if (!(weight >= 0)) {
-                    throw new ArgumentException(null, nameof(weights));
-                }
+            if (Points != weights.Count || !weights.All(w => w.Sign == Sign.Plus)) {
+                throw new ArgumentException(null, nameof(weights));
             }
 
             this.weights = weights;
         }
-
-        /// <summary>y切片を有効にするか</summary>
-        public bool EnableIntercept { get; private set; }
 
         /// <summary>重み付き誤差二乗和</summary>
         public MultiPrecision<N> WeightedCost(Vector<N> parameters) {

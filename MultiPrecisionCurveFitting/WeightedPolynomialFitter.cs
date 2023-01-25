@@ -6,31 +6,7 @@ namespace MultiPrecisionCurveFitting {
     /// <summary>重み付き多項式フィッティング</summary>
     public class WeightedPolynomialFitter<N> : Fitter<N> where N : struct, IConstant {
 
-        readonly IReadOnlyList<MultiPrecision<N>> weights;
-
-        /// <summary>コンストラクタ</summary>
-        public WeightedPolynomialFitter(IReadOnlyList<MultiPrecision<N>> xs, IReadOnlyList<MultiPrecision<N>> ys, IReadOnlyList<MultiPrecision<N>> weights, int degree, bool enable_intercept)
-            : base(xs, ys, checked(degree + (enable_intercept ? 1 : 0))) {
-
-            this.Degree = degree;
-            this.EnableIntercept = enable_intercept;
-
-            if (weights is null) {
-                throw new ArgumentNullException(nameof(weights));
-            }
-
-            if (Points != weights.Count) {
-                throw new ArgumentException(null, $"{nameof(weights)}");
-            }
-
-            foreach (var weight in weights) {
-                if (!(weight >= 0)) {
-                    throw new ArgumentException(null, nameof(weights));
-                }
-            }
-
-            this.weights = weights;
-        }
+        private readonly IReadOnlyList<MultiPrecision<N>> weights;
 
         /// <summary>次数</summary>
         public int Degree {
@@ -39,6 +15,20 @@ namespace MultiPrecisionCurveFitting {
 
         /// <summary>y切片を有効にするか</summary>
         public bool EnableIntercept { get; set; }
+
+        /// <summary>コンストラクタ</summary>
+        public WeightedPolynomialFitter(IReadOnlyList<MultiPrecision<N>> xs, IReadOnlyList<MultiPrecision<N>> ys, IReadOnlyList<MultiPrecision<N>> weights, int degree, bool enable_intercept)
+            : base(xs, ys, checked(degree + (enable_intercept ? 1 : 0))) {
+
+            this.Degree = degree;
+            this.EnableIntercept = enable_intercept;
+
+            if (Points != weights.Count || !weights.All(w => w.Sign == Sign.Plus)) {
+                throw new ArgumentException(null, nameof(weights));
+            }
+
+            this.weights = weights;
+        }
 
         /// <summary>重み付き誤差二乗和</summary>
         public MultiPrecision<N> WeightedCost(Vector<N> coefficients) {
