@@ -3,8 +3,7 @@ using MultiPrecisionAlgebra;
 
 namespace MultiPrecisionCurveFitting {
     public class PadeFitter<N> : Fitter<N> where N : struct, IConstant {
-        /// <summary>y切片</summary>
-        public MultiPrecision<N>? Intercept { get; private set; }
+        private readonly MultiPrecision<N>? intercept;
 
         /// <summary>分子係数</summary>
         public int Numer { get; private set; }
@@ -20,7 +19,7 @@ namespace MultiPrecisionCurveFitting {
             : base(xs, ys,
                   (numer >= 2 && denom >= 2) ? (numer + denom) : throw new ArgumentOutOfRangeException($"{nameof(numer)},{nameof(denom)}")) {
 
-            this.Intercept = intercept;
+            this.intercept = intercept;
             this.Numer = numer;
             this.Denom = denom;
         }
@@ -53,33 +52,9 @@ namespace MultiPrecisionCurveFitting {
         /// <summary>フィッティング</summary>
         public Vector<N> ExecuteFitting() {
             SumTable<N> sum_table = new(X.ToArray(), Y.ToArray());
+            (Matrix<N> m, Vector<N> v) = GenerateTable(sum_table, Numer, Denom);
 
-            Matrix<N> m = Matrix<N>.Zero(Numer + Denom - 1, Numer + Denom - 1);
-            for (int i = 0, n = Numer; i < n; i++) {
-                for (int j = i; j < n; j++) {
-                    m[i, j] = m[j, i] = sum_table[i + j, 0];
-                }
-            }
-            for (int i = Numer, n = m.Rows; i < n; i++) {
-                for (int j = 0; j < Numer; j++) {
-                    m[i, j] = m[j, i] = -sum_table[i + j - Numer + 1, 1];
-                }
-            }
-            for (int i = Numer, n = m.Rows; i < n; i++) {
-                for (int j = i; j < n; j++) {
-                    m[i, j] = m[j, i] = sum_table[i + j - 2 * Numer + 2, 2];
-                }
-            }
-
-            Vector<N> v = Vector<N>.Zero(Numer + Denom - 1);
-            for (int i = 0; i < Numer; i++) {
-                v[i] = sum_table[i, 1];
-            }
-            for (int i = Numer; i < v.Dim; i++) {
-                v[i] = -sum_table[i - Numer + 1, 2];
-            }
-
-            if (Intercept is null) {
+            if (intercept is null) {
                 Vector<N> x = m.Inverse * v;
 
                 Vector<N> parameters = Vector<N>.Zero(Numer + Denom);
@@ -90,19 +65,50 @@ namespace MultiPrecisionCurveFitting {
                 return parameters;
             }
             else {
-                v = v[1..] - Intercept * m[0, 1..];
+                v = v[1..] - intercept * m[0, 1..];
                 m = m[1.., 1..];
 
                 Vector<N> x = m.Inverse * v;
 
                 Vector<N> parameters = Vector<N>.Zero(Numer + Denom);
-                parameters[0] = Intercept;
+                parameters[0] = intercept;
                 parameters[1..Numer] = x[..(Numer - 1)];
                 parameters[Numer] = 1;
                 parameters[(Numer + 1)..] = x[(Numer - 1)..];
 
                 return parameters;
             }
+        }
+
+        internal static (Matrix<N> m, Vector<N> v) GenerateTable(SumTable<N> sum_table, int numer, int denom) {
+            int dim = numer + denom - 1;
+            
+            MultiPrecision<N>[,] m = new MultiPrecision<N>[dim, dim];
+            for (int i = 0, n = numer; i < n; i++) {
+                for (int j = i; j < n; j++) {
+                    m[i, j] = m[j, i] = sum_table[i + j, 0];
+                }
+            }
+            for (int i = numer, n = dim; i < n; i++) {
+                for (int j = 0; j < numer; j++) {
+                    m[i, j] = m[j, i] = -sum_table[i + j - numer + 1, 1];
+                }
+            }
+            for (int i = numer, n = dim; i < n; i++) {
+                for (int j = i; j < n; j++) {
+                    m[i, j] = m[j, i] = sum_table[i + j - 2 * numer + 2, 2];
+                }
+            }
+
+            MultiPrecision<N>[] v = new MultiPrecision<N>[numer + denom - 1];
+            for (int i = 0; i < numer; i++) {
+                v[i] = sum_table[i, 1];
+            }
+            for (int i = numer; i < dim; i++) {
+                v[i] = -sum_table[i - numer + 1, 2];
+            }
+
+            return (m, v);
         }
     }
 }

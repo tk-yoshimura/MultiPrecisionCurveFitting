@@ -29,16 +29,12 @@ namespace MultiPrecisionCurveFitting {
                     throw new ArgumentOutOfRangeException($"{nameof(xn)},{nameof(yn)}");
                 }
 
-                if (xs.Count < xn) {
-                    for (int i = xs.Count; i < xn; i++) {
-                        xs.Add(xs[0] * xs[^1]);
-                    }
+                for (int i = xs.Count; i < xn; i++) {
+                    xs.Add(xs[0] * xs[^1]);
                 }
 
-                if (ys.Count < yn) {
-                    for (int i = ys.Count; i < yn; i++) {
-                        ys.Add(ys[0] * ys[^1]);
-                    }
+                for (int i = ys.Count; i < yn; i++) {
+                    ys.Add(ys[0] * ys[^1]);
                 }
 
                 if (!table.ContainsKey((xn, yn))) {

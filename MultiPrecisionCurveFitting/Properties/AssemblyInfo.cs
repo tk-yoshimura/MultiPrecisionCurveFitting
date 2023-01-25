@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("MultiPrecisionCurveFitting")]
@@ -14,4 +15,6 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid("DF050371-6DFD-4187-92C6-3B46AF2D10EA")]
 
-[assembly: AssemblyVersion("1.4.0.*")]
+[assembly: AssemblyVersion("1.5.0.*")]
+
+[assembly: InternalsVisibleTo("MultiPrecisionCurveFittingTest")]
