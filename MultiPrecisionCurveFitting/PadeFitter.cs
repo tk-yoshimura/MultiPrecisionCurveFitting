@@ -4,7 +4,7 @@ using MultiPrecisionAlgebra;
 namespace MultiPrecisionCurveFitting {
     public class PadeFitter<N> : Fitter<N> where N : struct, IConstant {
         /// <summary>y切片</summary>
-        public MultiPrecision<N> Intercept { get; private set; }
+        public MultiPrecision<N>? Intercept { get; private set; }
 
         /// <summary>分子係数</summary>
         public int Numer { get; private set; }
@@ -13,10 +13,10 @@ namespace MultiPrecisionCurveFitting {
         public int Denom { get; private set; }
 
         /// <summary>コンストラクタ</summary>
-        /// <param name="intercept">切片</param>
         /// <param name="numer">分子係数</param>
         /// <param name="denom">分母係数</param>
-        public PadeFitter(IReadOnlyList<MultiPrecision<N>> xs, IReadOnlyList<MultiPrecision<N>> ys, MultiPrecision<N> intercept, int numer, int denom)
+        /// <param name="intercept">切片</param>
+        public PadeFitter(IReadOnlyList<MultiPrecision<N>> xs, IReadOnlyList<MultiPrecision<N>> ys, int numer, int denom, MultiPrecision<N>? intercept = null)
             : base(xs, ys,
                   (numer >= 2 && denom >= 2) ? (numer + denom) : throw new ArgumentOutOfRangeException($"{nameof(numer)},{nameof(denom)}")) {
 
@@ -26,7 +26,7 @@ namespace MultiPrecisionCurveFitting {
         }
 
         public override MultiPrecision<N> FittingValue(MultiPrecision<N> x, Vector<N> parameters) {
-            (MultiPrecision<N> numer, MultiPrecision<N> denom) = Fraction(x, parameters, Numer);
+            (MultiPrecision<N> numer, MultiPrecision<N> denom) = Fraction(x, parameters);
 
             MultiPrecision<N> y = numer / denom;
 
@@ -43,74 +43,66 @@ namespace MultiPrecisionCurveFitting {
             return y;
         }
 
-        public static (MultiPrecision<N> numer, MultiPrecision<N> denom) Fraction(MultiPrecision<N> x, Vector<N> parameters, int numer) {
-            MultiPrecision<N> n = Polynomial(x, ((MultiPrecision<N>[])parameters)[..numer]);
-            MultiPrecision<N> d = Polynomial(x, ((MultiPrecision<N>[])parameters)[numer..]);
+        public (MultiPrecision<N> numer, MultiPrecision<N> denom) Fraction(MultiPrecision<N> x, Vector<N> parameters) {
+            MultiPrecision<N> n = Polynomial(x, parameters[..Numer]);
+            MultiPrecision<N> d = Polynomial(x, parameters[Numer..]);
 
             return (n, d);
         }
 
         /// <summary>フィッティング</summary>
-        public Vector<N> ExecuteFitting(double lambda_init = 0.25, double lambda_decay = 0.995, int iter = 256, Func<Vector<N>, bool>? iter_callback = null) {
-            Vector<N> poly = new PolynomialFitter<N>(
-                X, Y.Select((v) => v - Intercept).ToArray(),
-                Numer + Denom - 2, enable_intercept: false).ExecuteFitting();
-            poly = (new MultiPrecision<N>[] { Intercept }).Concat((MultiPrecision<N>[])poly).ToArray();
+        public Vector<N> ExecuteFitting() {
+            SumTable<N> sum_table = new(X.ToArray(), Y.ToArray());
 
-            (MultiPrecision<N>[] ms, MultiPrecision<N>[] ns) = PadeSolver<N>.Solve(poly, Numer - 1, Denom - 1);
-            (ms, ns) = (ms[1..].ToArray(), ns[1..].ToArray());
-
-            MultiPrecision<N> fitting_func(MultiPrecision<N> x, Vector<N> parameters) {
-                (MultiPrecision<N> numer, MultiPrecision<N> denom) = Fraction(x, parameters, Numer - 1);
-
-                numer = x * numer + Intercept;
-                denom = x * denom + 1;
-
-                return numer / denom;
+            Matrix<N> m = Matrix<N>.Zero(Numer + Denom - 1, Numer + Denom - 1);
+            for (int i = 0, n = Numer; i < n; i++) {
+                for (int j = i; j < n; j++) {
+                    m[i, j] = m[j, i] = sum_table[i + j, 0];
+                }
+            }
+            for (int i = Numer, n = m.Rows; i < n; i++) {
+                for (int j = 0; j < Numer; j++) {
+                    m[i, j] = m[j, i] = -sum_table[i + j - Numer + 1, 1];
+                }
+            }
+            for (int i = Numer, n = m.Rows; i < n; i++) {
+                for (int j = i; j < n; j++) {
+                    m[i, j] = m[j, i] = sum_table[i + j - 2 * Numer + 2, 2];
+                }
             }
 
-            Vector<N> fitting_diff_func(MultiPrecision<N> x, Vector<N> parameters) {
-                (MultiPrecision<N> numer, MultiPrecision<N> denom) = Fraction(x, parameters, Numer - 1);
-
-                numer = x * numer + Intercept;
-                denom = x * denom + 1;
-
-                MultiPrecision<N>[] gms = new MultiPrecision<N>[Numer - 1], gns = new MultiPrecision<N>[Denom - 1];
-                gms[0] = x / denom;
-                gns[0] = -x * numer / (denom * denom);
-
-                for (int i = 1; i < gms.Length; i++) {
-                    gms[i] = x * gms[i - 1];
-                }
-                for (int i = 1; i < gns.Length; i++) {
-                    gns[i] = x * gns[i - 1];
-                }
-
-                return gms.Concat(gns).ToArray();
+            Vector<N> v = Vector<N>.Zero(Numer + Denom - 1);
+            for (int i = 0; i < Numer; i++) {
+                v[i] = sum_table[i, 1];
+            }
+            for (int i = Numer; i < v.Dim; i++) {
+                v[i] = -sum_table[i - Numer + 1, 2];
             }
 
-            bool callback(Vector<N> parameters) {
-                if (iter_callback is not null) {
-                    parameters = (new MultiPrecision<N>[] { Intercept })
-                         .Concat(((MultiPrecision<N>[])parameters)[..(Numer - 1)])
-                         .Concat(new MultiPrecision<N>[] { 1 })
-                         .Concat(((MultiPrecision<N>[])parameters)[(Numer - 1)..]).ToArray();
+            if (Intercept is null) {
+                Vector<N> x = m.Inverse * v;
 
-                    return iter_callback(parameters);
-                }
+                Vector<N> parameters = Vector<N>.Zero(Numer + Denom);
+                parameters[..Numer] = x[..Numer];
+                parameters[Numer] = 1;
+                parameters[(Numer + 1)..] = x[Numer..];
 
-                return true;
+                return parameters;
             }
+            else {
+                v = v[1..] - Intercept * m[0, 1..];
+                m = m[1.., 1..];
 
-            LevenbergMarquardtFitter<N> fitter = new(X, Y, new FittingFunction<N>(Numer + Denom - 2, fitting_func, fitting_diff_func));
-            MultiPrecision<N>[] parameters = fitter.ExecuteFitting(ms.Concat(ns).ToArray(), lambda_init, lambda_decay, iter, callback);
+                Vector<N> x = m.Inverse * v;
 
-            parameters = (new MultiPrecision<N>[] { Intercept })
-                         .Concat(parameters[..(Numer - 1)])
-                         .Concat(new MultiPrecision<N>[] { 1 })
-                         .Concat(parameters[(Numer - 1)..]).ToArray();
+                Vector<N> parameters = Vector<N>.Zero(Numer + Denom);
+                parameters[0] = Intercept;
+                parameters[1..Numer] = x[..(Numer - 1)];
+                parameters[Numer] = 1;
+                parameters[(Numer + 1)..] = x[(Numer - 1)..];
 
-            return parameters;
+                return parameters;
+            }
         }
     }
 }

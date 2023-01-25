@@ -12,18 +12,7 @@ namespace MultiPrecisionCurveFitting.Tests {
 
             PadeFitter<Pow2.N8> fitter = new(xs, ys, intercept: 0.75, numer: 4, denom: 3);
 
-            bool callback(Vector<Pow2.N8> parameters) {
-                MultiPrecision<Pow2.N8> norm = fitter.Error(parameters).Norm;
-
-                Console.WriteLine(parameters);
-                Console.WriteLine(norm);
-
-                bool is_continue = norm > 1e-3;
-
-                return is_continue;
-            };
-
-            Vector<Pow2.N8> parameters = fitter.ExecuteFitting(iter: 256, iter_callback: callback);
+            Vector<Pow2.N8> parameters = fitter.ExecuteFitting();
 
             Console.WriteLine($"Numer : {(Vector<Pow2.N8>)((MultiPrecision<Pow2.N8>[])parameters)[..fitter.Numer]}");
             Console.WriteLine($"Denom : {(Vector<Pow2.N8>)((MultiPrecision<Pow2.N8>[])parameters)[fitter.Numer..]}");
