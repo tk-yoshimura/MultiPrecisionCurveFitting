@@ -24,21 +24,18 @@ MultiPrecision<Pow2.N8>[] ys = xs.Select(v => MultiPrecision<Pow2.N8>.Cos(v) - 0
 
 PadeFitter<Pow2.N8> fitter = new(xs, ys, intercept: 0.75, numer: 4, denom: 3);
 
-bool callback(Vector<Pow2.N8> parameters) {
-    MultiPrecision<Pow2.N8> norm = fitter.Error(parameters).Norm;
-
-    Console.WriteLine(parameters);
-    Console.WriteLine(norm);
-
-    bool is_continue = norm > 1e-3;
-
-    return is_continue;
-};
-
-Vector<Pow2.N8> parameters = fitter.ExecuteFitting(iter: 256, iter_callback: callback);
+Vector<Pow2.N8> parameters = fitter.ExecuteFitting();
 
 Console.WriteLine($"Numer : {(Vector<Pow2.N8>)((MultiPrecision<Pow2.N8>[])parameters)[..fitter.Numer]}");
 Console.WriteLine($"Denom : {(Vector<Pow2.N8>)((MultiPrecision<Pow2.N8>[])parameters)[fitter.Numer..]}");
+
+Assert.AreEqual(0.75, fitter.FittingValue(0, parameters));
+
+for (int i = 0; i < xs.Length; i++) {
+    Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.FittingValue(xs[i], parameters)) < 1e-5,
+        $"\nexpected : {ys[i]}\n actual  : {fitter.FittingValue(xs[i], parameters)}"
+    );
+}
 ```
 
 See also: [Tests](https://github.com/tk-yoshimura/MultiPrecisionCurveFitting/tree/main/MultiPrecisionCurveFittingTest)
