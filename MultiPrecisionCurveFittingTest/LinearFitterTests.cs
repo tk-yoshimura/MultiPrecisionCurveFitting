@@ -15,5 +15,16 @@ namespace MultiPrecisionCurveFitting.Tests {
             Assert.AreEqual(new Vector<Pow2.N8>(new MultiPrecision<Pow2.N8>[] { -13, 7 }), fitter1.ExecuteFitting());
             Assert.AreEqual(new Vector<Pow2.N8>(new MultiPrecision<Pow2.N8>[] { 2d }), fitter2.ExecuteFitting());
         }
+
+        [TestMethod()]
+        public void ExecuteWeightedFittingTest() {
+            MultiPrecision<Pow2.N8>[] xs = { 2, 3, 4 }, ys = { 1, 8, 1e+8 }, ws = { 0.5, 0.5, 0 };
+
+            WeightedLinearFitter<Pow2.N8> fitter1 = new(xs, ys, ws, enable_intercept: true);
+            WeightedLinearFitter<Pow2.N8> fitter2 = new(xs, ys, ws, enable_intercept: false);
+
+            Assert.AreEqual(new Vector<Pow2.N8>(new MultiPrecision<Pow2.N8>[] { -13, 7 }), fitter1.ExecuteFitting());
+            Assert.AreEqual(new Vector<Pow2.N8>(new MultiPrecision<Pow2.N8>[] { 2d }), fitter2.ExecuteFitting());
+        }
     }
 }

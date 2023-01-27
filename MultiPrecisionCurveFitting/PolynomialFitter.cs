@@ -47,35 +47,44 @@ namespace MultiPrecisionCurveFitting {
 
         /// <summary>フィッティング</summary>
         public Vector<N> ExecuteFitting() {
-            Matrix<N> m = Matrix<N>.Zero(Points, Parameters);
-            Vector<N> b = Vector<N>.Zero(Points);
+            SumTable<N> sum_table = new(new Vector<N>(X), new Vector<N>(Y));
+            (Matrix<N> m, Vector<N> v) = GenerateTable(sum_table, Degree, EnableIntercept);
 
-            if (EnableIntercept) {
-                for (int i = 0; i < Points; i++) {
-                    MultiPrecision<N> x = X[i];
-                    b[i] = Y[i];
+            Vector<N> parameters = Matrix<N>.Solve(m, v);
 
-                    m[i, 0] = 1;
+            return parameters;
+        }
 
-                    for (int j = 1; j <= Degree; j++) {
-                        m[i, j] = m[i, j - 1] * x;
+        internal static (Matrix<N> m, Vector<N> v) GenerateTable(SumTable<N> sum_table, int degree, bool enable_intercept) {
+            int dim = degree + (enable_intercept ? 1 : 0);
+
+            MultiPrecision<N>[,] m = new MultiPrecision<N>[dim, dim];
+            MultiPrecision<N>[] v = new MultiPrecision<N>[dim];
+
+            if (enable_intercept) {
+                for (int i = 0; i < dim; i++) {
+                    for (int j = i; j < dim; j++) {
+                        m[i, j] = m[j, i] = sum_table[i + j, 0];
                     }
                 }
+
+                for (int i = 0; i < dim; i++) {
+                    v[i] = sum_table[i, 1];
+                }
             }
-            else {
-                for (int i = 0; i < Points; i++) {
-                    MultiPrecision<N> x = X[i];
-                    b[i] = Y[i];
-
-                    m[i, 0] = x;
-
-                    for (int j = 1; j < Degree; j++) {
-                        m[i, j] = m[i, j - 1] * x;
+            else { 
+                for (int i = 0; i < dim; i++) {
+                    for (int j = i; j < dim; j++) {
+                        m[i, j] = m[j, i] = sum_table[i + j + 2, 0];
                     }
+                }
+
+                for (int i = 0; i < dim; i++) {
+                    v[i] = sum_table[i + 1, 1];
                 }
             }
 
-            return (m.Transpose * m).Inverse * m.Transpose * b;
+            return (m, v);
         }
     }
 }

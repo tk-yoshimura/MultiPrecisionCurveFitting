@@ -52,33 +52,31 @@ namespace MultiPrecisionCurveFitting {
 
         /// <summary>フィッティング</summary>
         public Vector<N> ExecuteFitting() {
-            SumTable<N> sum_table = new(X.ToArray(), Y.ToArray());
+            SumTable<N> sum_table = new(new Vector<N>(X), new Vector<N>(Y));
             (Matrix<N> m, Vector<N> v) = GenerateTable(sum_table, Numer, Denom);
 
-            if (intercept is null) {
-                Vector<N> x = m.Inverse * v;
+            Vector<N> parameters = Vector<N>.Zero(Numer + Denom);
 
-                Vector<N> parameters = Vector<N>.Zero(Numer + Denom);
+            if (intercept is null) {
+                Vector<N> x = Matrix<N>.Solve(m, v);
+
                 parameters[..Numer] = x[..Numer];
                 parameters[Numer] = 1;
                 parameters[(Numer + 1)..] = x[Numer..];
-
-                return parameters;
             }
             else {
                 v = v[1..] - intercept * m[0, 1..];
                 m = m[1.., 1..];
 
-                Vector<N> x = m.Inverse * v;
+                Vector<N> x = Matrix<N>.Solve(m, v);
 
-                Vector<N> parameters = Vector<N>.Zero(Numer + Denom);
                 parameters[0] = intercept;
                 parameters[1..Numer] = x[..(Numer - 1)];
                 parameters[Numer] = 1;
                 parameters[(Numer + 1)..] = x[(Numer - 1)..];
-
-                return parameters;
             }
+
+            return parameters;
         }
 
         internal static (Matrix<N> m, Vector<N> v) GenerateTable(SumTable<N> sum_table, int numer, int denom) {

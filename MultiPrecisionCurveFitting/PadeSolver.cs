@@ -34,7 +34,7 @@ namespace MultiPrecisionCurveFitting {
                 }
             }
 
-            Vector<N> v = a.Inverse * c;
+            Vector<N> v = Matrix<N>.Solve(a, c);
             MultiPrecision<N>[] ms = new MultiPrecision<N>[] { cs[0] }.Concat(((MultiPrecision<N>[])v)[..m]).ToArray();
             MultiPrecision<N>[] ns = new MultiPrecision<N>[] { 1 }.Concat(((MultiPrecision<N>[])v)[m..]).ToArray();
 

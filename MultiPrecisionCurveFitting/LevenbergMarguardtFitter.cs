@@ -30,7 +30,9 @@ namespace MultiPrecisionCurveFitting {
                 jacobian = Jacobian(parameters);
                 jacobian_transpose = jacobian.Transpose;
 
-                dparam = (jacobian_transpose * jacobian + lambda * Matrix<N>.Identity(Parameters)).Inverse * jacobian_transpose * errors;
+                Matrix<N> m = jacobian_transpose * jacobian + lambda * Matrix<N>.Identity(Parameters);
+
+                dparam = m.Inverse * jacobian_transpose * errors;
 
                 if (!Vector<N>.IsValid(dparam)) {
                     break;

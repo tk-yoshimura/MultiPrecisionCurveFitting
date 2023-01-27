@@ -4,8 +4,9 @@ using MultiPrecisionAlgebra;
 namespace MultiPrecisionCurveFitting {
     internal class SumTable<N> where N : struct, IConstant {
         private readonly List<Vector<N>> xs = new(), ys = new();
-        private readonly Vector<N>? w;
         private readonly Dictionary<(int xn, int yn), MultiPrecision<N>> table;
+
+        private Vector<N>? w;
 
         public SumTable(Vector<N> x, Vector<N> y, Vector<N>? w = null) {
             if (x.Dim != y.Dim) {
@@ -19,7 +20,7 @@ namespace MultiPrecisionCurveFitting {
             this.ys.Add(y);
             this.w = w;
             this.table = new() {
-                { (0, 0), w is null ? x.Dim : ((MultiPrecision<N>[])w).Sum() },
+                { (0, 0), w is null ? x.Dim : w.Sum },
             };
         }
 
@@ -41,27 +42,38 @@ namespace MultiPrecisionCurveFitting {
                     if (xn > 0 && yn > 0) {
                         Vector<N> x = xs[xn - 1], y = ys[yn - 1];
 
-                        MultiPrecision<N> s = w is null ? ((MultiPrecision<N>[])(x * y)).Sum() : ((MultiPrecision<N>[])(x * y * w)).Sum();
+                        MultiPrecision<N> s = w is null ? (x * y).Sum : (x * y * w).Sum;
 
                         table.Add((xn, yn), s);
                     }
                     else if (xn > 0) {
                         Vector<N> x = xs[xn - 1];
 
-                        MultiPrecision<N> s = w is null ? ((MultiPrecision<N>[])x).Sum() : ((MultiPrecision<N>[])(x * w)).Sum();
+                        MultiPrecision<N> s = w is null ? x.Sum : (x * w).Sum;
 
                         table.Add((xn, yn), s);
                     }
                     else {
                         Vector<N> y = ys[yn - 1];
 
-                        MultiPrecision<N> s = w is null ? ((MultiPrecision<N>[])y).Sum() : ((MultiPrecision<N>[])(y * w)).Sum();
+                        MultiPrecision<N> s = w is null ? y.Sum : (y * w).Sum;
 
                         table.Add((xn, yn), s);
                     }
                 }
 
                 return table[(xn, yn)];
+            }
+        }
+
+        public Vector<N>? W {
+            get => w;
+            set {
+                if (value is not null && xs[0].Dim != value.Dim) {
+                    throw new ArgumentException("mismatch dim", nameof(w));
+                }
+
+                this.w = value;
             }
         }
     }

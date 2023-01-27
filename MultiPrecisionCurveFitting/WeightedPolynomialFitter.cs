@@ -74,43 +74,12 @@ namespace MultiPrecisionCurveFitting {
 
         /// <summary>フィッティング</summary>
         public Vector<N> ExecuteFitting() {
-            Matrix<N> m = Matrix<N>.Zero(Points, Parameters);
-            Vector<N> b = Vector<N>.Zero(Points);
+            SumTable<N> sum_table = new(new Vector<N>(X), new Vector<N>(Y), new Vector<N>(weights));
+            (Matrix<N> m, Vector<N> v) = PolynomialFitter<N>.GenerateTable(sum_table, Degree, EnableIntercept);
 
-            if (EnableIntercept) {
-                for (int i = 0; i < Points; i++) {
-                    MultiPrecision<N> x = X[i];
-                    b[i] = Y[i];
+            Vector<N> parameters = Matrix<N>.Solve(m, v);
 
-                    m[i, 0] = 1;
-
-                    for (int j = 1; j <= Degree; j++) {
-                        m[i, j] = m[i, j - 1] * x;
-                    }
-                }
-            }
-            else {
-                for (int i = 0; i < Points; i++) {
-                    MultiPrecision<N> x = X[i];
-                    b[i] = Y[i];
-
-                    m[i, 0] = x;
-
-                    for (int j = 1; j < Degree; j++) {
-                        m[i, j] = m[i, j - 1] * x;
-                    }
-                }
-            }
-
-            Matrix<N> m_transpose = m.Transpose;
-
-            for (int i = 0; i < Points; i++) {
-                for (int j = 0; j < m_transpose.Rows; j++) {
-                    m_transpose[j, i] *= weights[i];
-                }
-            }
-
-            return (m_transpose * m).Inverse * m_transpose * b;
+            return parameters;
         }
     }
 }
