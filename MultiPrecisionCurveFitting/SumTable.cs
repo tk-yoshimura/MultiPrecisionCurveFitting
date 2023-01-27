@@ -4,7 +4,7 @@ using MultiPrecisionAlgebra;
 namespace MultiPrecisionCurveFitting {
     internal class SumTable<N> where N : struct, IConstant {
         private readonly List<Vector<N>> xs = new(), ys = new();
-        private readonly Dictionary<(int xn, int yn), MultiPrecision<N>> table;
+        private Dictionary<(int xn, int yn), MultiPrecision<N>> table;
 
         private Vector<N>? w = null;
 
@@ -70,7 +70,9 @@ namespace MultiPrecisionCurveFitting {
                 }
 
                 this.w = value;
-                this.table[(0, 0)] = w is null ? xs[0].Dim : w.Sum;
+                this.table = new() {
+                    { (0, 0), w is null ? xs[0].Dim : w.Sum },
+                };
             }
         }
     }
