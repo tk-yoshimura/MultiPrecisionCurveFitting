@@ -1,5 +1,5 @@
 # MultiPrecisionCurveFitting 
-  Float Multi Precision Curve Fitting - linear, polynomial, pade, arbitrary function
+  Float Multi Precision Curve Fitting - linear, polynomial, pade, arbitrary function 
 
 ## Requirement
 .NET 6.0
