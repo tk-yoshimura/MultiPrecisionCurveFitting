@@ -6,6 +6,8 @@ namespace MultiPrecisionCurveFitting {
     /// <summary>多項式フィッティング</summary>
     public class PolynomialFitter<N> : Fitter<N> where N : struct, IConstant {
 
+        private readonly SumTable<N> sum_table;
+
         /// <summary>次数</summary>
         public int Degree {
             get; private set;
@@ -15,11 +17,12 @@ namespace MultiPrecisionCurveFitting {
         public bool EnableIntercept { get; set; }
 
         /// <summary>コンストラクタ</summary>
-        public PolynomialFitter(IReadOnlyList<MultiPrecision<N>> xs, IReadOnlyList<MultiPrecision<N>> ys, int degree, bool enable_intercept)
+        public PolynomialFitter(Vector<N> xs, Vector<N> ys, int degree, bool enable_intercept)
             : base(xs, ys, checked(degree + (enable_intercept ? 1 : 0))) {
 
             this.Degree = degree;
             this.EnableIntercept = enable_intercept;
+            this.sum_table = new(X, Y);
         }
 
         /// <summary>フィッティング値</summary>
@@ -46,8 +49,8 @@ namespace MultiPrecisionCurveFitting {
         }
 
         /// <summary>フィッティング</summary>
-        public Vector<N> ExecuteFitting() {
-            SumTable<N> sum_table = new(new Vector<N>(X), new Vector<N>(Y));
+        public Vector<N> ExecuteFitting(Vector<N>? weights = null) {
+            sum_table.W = weights;
             (Matrix<N> m, Vector<N> v) = GenerateTable(sum_table, Degree, EnableIntercept);
 
             Vector<N> parameters = Matrix<N>.Solve(m, v);
@@ -72,7 +75,7 @@ namespace MultiPrecisionCurveFitting {
                     v[i] = sum_table[i, 1];
                 }
             }
-            else { 
+            else {
                 for (int i = 0; i < dim; i++) {
                     for (int j = i; j < dim; j++) {
                         m[i, j] = m[j, i] = sum_table[i + j + 2, 0];

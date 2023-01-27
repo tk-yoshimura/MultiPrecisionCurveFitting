@@ -4,6 +4,7 @@ using MultiPrecisionAlgebra;
 namespace MultiPrecisionCurveFitting {
     public class PadeFitter<N> : Fitter<N> where N : struct, IConstant {
 
+        private readonly SumTable<N> sum_table;
         private readonly MultiPrecision<N>? intercept;
 
         /// <summary>分子係数</summary>
@@ -16,11 +17,12 @@ namespace MultiPrecisionCurveFitting {
         /// <param name="numer">分子係数</param>
         /// <param name="denom">分母係数</param>
         /// <param name="intercept">切片</param>
-        public PadeFitter(IReadOnlyList<MultiPrecision<N>> xs, IReadOnlyList<MultiPrecision<N>> ys, int numer, int denom, MultiPrecision<N>? intercept = null)
+        public PadeFitter(Vector<N> xs, Vector<N> ys, int numer, int denom, MultiPrecision<N>? intercept = null)
             : base(xs, ys,
                   (numer >= 2 && denom >= 2) ? (numer + denom) : throw new ArgumentOutOfRangeException($"{nameof(numer)},{nameof(denom)}")) {
 
             this.intercept = intercept;
+            this.sum_table = new(X, Y);
             this.Numer = numer;
             this.Denom = denom;
         }
@@ -33,10 +35,10 @@ namespace MultiPrecisionCurveFitting {
             return y;
         }
 
-        protected static MultiPrecision<N> Polynomial(MultiPrecision<N> x, MultiPrecision<N>[] coefs) {
+        protected static MultiPrecision<N> Polynomial(MultiPrecision<N> x, Vector<N> coefs) {
             MultiPrecision<N> y = coefs[^1];
 
-            for (int i = coefs.Length - 2; i >= 0; i--) {
+            for (int i = coefs.Dim - 2; i >= 0; i--) {
                 y = x * y + coefs[i];
             }
 
@@ -51,8 +53,8 @@ namespace MultiPrecisionCurveFitting {
         }
 
         /// <summary>フィッティング</summary>
-        public Vector<N> ExecuteFitting() {
-            SumTable<N> sum_table = new(new Vector<N>(X), new Vector<N>(Y));
+        public Vector<N> ExecuteFitting(Vector<N>? weights = null) {
+            sum_table.W = weights;
             (Matrix<N> m, Vector<N> v) = GenerateTable(sum_table, Numer, Denom);
 
             Vector<N> parameters = Vector<N>.Zero(Numer + Denom);

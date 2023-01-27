@@ -8,14 +8,14 @@ namespace MultiPrecisionCurveFitting {
         /// <param name="cs">テイラー係数</param>
         /// <param name="m">分子係数</param>
         /// <param name="n">分母係数</param>
-        public static (MultiPrecision<N>[] ms, MultiPrecision<N>[] ns) Solve(MultiPrecision<N>[] cs, int m, int n) {
+        public static (Vector<N> ms, Vector<N> ns) Solve(Vector<N> cs, int m, int n) {
             if (m < 0) {
                 throw new ArgumentOutOfRangeException(nameof(m));
             }
             if (n < 0) {
                 throw new ArgumentOutOfRangeException(nameof(n));
             }
-            if (cs.Length != checked(m + n + 1)) {
+            if (cs.Dim != checked(m + n + 1)) {
                 throw new ArgumentException("Illegal length.", nameof(cs));
             }
 
@@ -35,8 +35,8 @@ namespace MultiPrecisionCurveFitting {
             }
 
             Vector<N> v = Matrix<N>.Solve(a, c);
-            MultiPrecision<N>[] ms = new MultiPrecision<N>[] { cs[0] }.Concat(((MultiPrecision<N>[])v)[..m]).ToArray();
-            MultiPrecision<N>[] ns = new MultiPrecision<N>[] { 1 }.Concat(((MultiPrecision<N>[])v)[m..]).ToArray();
+            Vector<N> ms = new MultiPrecision<N>[] { cs[0] }.Concat(((MultiPrecision<N>[])v)[..m]).ToArray();
+            Vector<N> ns = new MultiPrecision<N>[] { 1 }.Concat(((MultiPrecision<N>[])v)[m..]).ToArray();
 
             return (ms, ns);
         }
@@ -45,13 +45,13 @@ namespace MultiPrecisionCurveFitting {
         /// <param name="a">説明変数</param>
         /// <param name="ms">分子係数</param>
         /// <param name="ns">分母係数</param>
-        public static MultiPrecision<N> Approx(MultiPrecision<N> a, MultiPrecision<N>[] ms, MultiPrecision<N>[] ns) {
+        public static MultiPrecision<N> Approx(MultiPrecision<N> a, Vector<N> ms, Vector<N> ns) {
             MultiPrecision<N> p = ms[^1], q = ns[^1];
 
-            for (int i = ms.Length - 2; i >= 0; i--) {
+            for (int i = ms.Dim - 2; i >= 0; i--) {
                 p = p * a + ms[i];
             }
-            for (int i = ns.Length - 2; i >= 0; i--) {
+            for (int i = ns.Dim - 2; i >= 0; i--) {
                 q = q * a + ns[i];
             }
 

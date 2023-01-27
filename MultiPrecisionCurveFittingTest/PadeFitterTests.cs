@@ -14,8 +14,8 @@ namespace MultiPrecisionCurveFitting.Tests {
 
             Vector<Pow2.N8> parameters = fitter.ExecuteFitting();
 
-            Console.WriteLine($"Numer : {(Vector<Pow2.N8>)((MultiPrecision<Pow2.N8>[])parameters)[..fitter.Numer]}");
-            Console.WriteLine($"Denom : {(Vector<Pow2.N8>)((MultiPrecision<Pow2.N8>[])parameters)[fitter.Numer..]}");
+            Console.WriteLine($"Numer : {parameters[..fitter.Numer]}");
+            Console.WriteLine($"Denom : {parameters[fitter.Numer..]}");
 
             Assert.AreEqual(0.75, fitter.FittingValue(0, parameters));
 
@@ -35,8 +35,8 @@ namespace MultiPrecisionCurveFitting.Tests {
 
             Vector<Pow2.N8> parameters = fitter.ExecuteFitting();
 
-            Console.WriteLine($"Numer : {(Vector<Pow2.N8>)((MultiPrecision<Pow2.N8>[])parameters)[..fitter.Numer]}");
-            Console.WriteLine($"Denom : {(Vector<Pow2.N8>)((MultiPrecision<Pow2.N8>[])parameters)[fitter.Numer..]}");
+            Console.WriteLine($"Numer : {parameters[..fitter.Numer]}");
+            Console.WriteLine($"Denom : {parameters[fitter.Numer..]}");
 
             for (int i = 0; i < xs.Length; i++) {
                 Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.FittingValue(xs[i], parameters)) < 1e-5,
@@ -54,12 +54,12 @@ namespace MultiPrecisionCurveFitting.Tests {
             ys[256] = 1e+8;
             ws[256] = 0;
 
-            WeightedPadeFitter<Pow2.N8> fitter = new(xs, ys, ws, intercept: 0.75, numer: 4, denom: 3);
+            PadeFitter<Pow2.N8> fitter = new(xs, ys, intercept: 0.75, numer: 4, denom: 3);
 
-            Vector<Pow2.N8> parameters = fitter.ExecuteFitting();
+            Vector<Pow2.N8> parameters = fitter.ExecuteFitting(ws);
 
-            Console.WriteLine($"Numer : {(Vector<Pow2.N8>)((MultiPrecision<Pow2.N8>[])parameters)[..fitter.Numer]}");
-            Console.WriteLine($"Denom : {(Vector<Pow2.N8>)((MultiPrecision<Pow2.N8>[])parameters)[fitter.Numer..]}");
+            Console.WriteLine($"Numer : {parameters[..fitter.Numer]}");
+            Console.WriteLine($"Denom : {parameters[fitter.Numer..]}");
 
             Assert.AreEqual(0.75, fitter.FittingValue(0, parameters));
 
@@ -83,12 +83,12 @@ namespace MultiPrecisionCurveFitting.Tests {
             ys[256] = 1e+8;
             ws[256] = 0;
 
-            WeightedPadeFitter<Pow2.N8> fitter = new(xs, ys, ws, numer: 4, denom: 3);
+            PadeFitter<Pow2.N8> fitter = new(xs, ys, numer: 4, denom: 3);
 
-            Vector<Pow2.N8> parameters = fitter.ExecuteFitting();
+            Vector<Pow2.N8> parameters = fitter.ExecuteFitting(ws);
 
-            Console.WriteLine($"Numer : {(Vector<Pow2.N8>)((MultiPrecision<Pow2.N8>[])parameters)[..fitter.Numer]}");
-            Console.WriteLine($"Denom : {(Vector<Pow2.N8>)((MultiPrecision<Pow2.N8>[])parameters)[fitter.Numer..]}");
+            Console.WriteLine($"Numer : {parameters[..fitter.Numer]}");
+            Console.WriteLine($"Denom : {parameters[fitter.Numer..]}");
 
             for (int i = 0; i < xs.Length; i++) {
                 if (i == 256) {

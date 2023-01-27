@@ -6,21 +6,17 @@ namespace MultiPrecisionCurveFitting {
         private readonly List<Vector<N>> xs = new(), ys = new();
         private readonly Dictionary<(int xn, int yn), MultiPrecision<N>> table;
 
-        private Vector<N>? w;
+        private Vector<N>? w = null;
 
-        public SumTable(Vector<N> x, Vector<N> y, Vector<N>? w = null) {
+        public SumTable(Vector<N> x, Vector<N> y) {
             if (x.Dim != y.Dim) {
-                throw new ArgumentException("mismatch dim", $"{nameof(x)},{nameof(y)}");
-            }
-            if (w is not null && x.Dim != w.Dim) {
-                throw new ArgumentException("mismatch dim", nameof(w));
+                throw new ArgumentException("Illegal length.", $"{nameof(x)},{nameof(y)}");
             }
 
             this.xs.Add(x);
             this.ys.Add(y);
-            this.w = w;
             this.table = new() {
-                { (0, 0), w is null ? x.Dim : w.Sum },
+                { (0, 0), x.Dim },
             };
         }
 
@@ -70,10 +66,11 @@ namespace MultiPrecisionCurveFitting {
             get => w;
             set {
                 if (value is not null && xs[0].Dim != value.Dim) {
-                    throw new ArgumentException("mismatch dim", nameof(w));
+                    throw new ArgumentException("Illegal length.", nameof(w));
                 }
 
                 this.w = value;
+                this.table[(0, 0)] = w is null ? xs[0].Dim : w.Sum;
             }
         }
     }

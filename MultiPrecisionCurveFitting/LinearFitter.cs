@@ -6,23 +6,23 @@ namespace MultiPrecisionCurveFitting {
     /// <summary>線形フィッティング</summary>
     public class LinearFitter<N> : Fitter<N> where N : struct, IConstant {
 
+        private readonly SumTable<N> sum_table;
+
         /// <summary>y切片を有効にするか</summary>
         public bool EnableIntercept { get; private set; }
 
         /// <summary>コンストラクタ</summary>
-        public LinearFitter(IReadOnlyList<MultiPrecision<N>> xs, IReadOnlyList<MultiPrecision<N>> ys, bool enable_intercept)
+        public LinearFitter(Vector<N> xs, Vector<N> ys, bool enable_intercept)
             : base(xs, ys, enable_intercept ? 2 : 1) {
 
-            EnableIntercept = enable_intercept;
+            this.EnableIntercept = enable_intercept;
+            this.sum_table = new(X, Y);
         }
 
         /// <summary>フィッティング値</summary>
         public override MultiPrecision<N> FittingValue(MultiPrecision<N> x, Vector<N> parameters) {
-            if (parameters is null) {
-                throw new ArgumentNullException(nameof(parameters));
-            }
             if (parameters.Dim != Parameters) {
-                throw new ArgumentException(null, nameof(parameters));
+                throw new ArgumentException("Illegal length.", nameof(parameters));
             }
 
             if (EnableIntercept) {
@@ -34,36 +34,22 @@ namespace MultiPrecisionCurveFitting {
         }
 
         /// <summary>フィッティング</summary>
-        public Vector<N> ExecuteFitting() {
+        public Vector<N> ExecuteFitting(Vector<N>? weights = null) {
+            sum_table.W = weights;
+
+            MultiPrecision<N> sum_wxx = sum_table[2, 0], sum_wxy = sum_table[1, 1];
+
             if (EnableIntercept) {
-                MultiPrecision<N> sum_x = 0, sum_y = 0, sum_sq_x = 0, sum_xy = 0, n = Points;
+                MultiPrecision<N> sum_w = sum_table[0, 0], sum_wx = sum_table[1, 0], sum_wy = sum_table[0, 1];
 
-                for (int i = 0; i < Points; i++) {
-                    MultiPrecision<N> x = X[i], y = Y[i];
-
-                    sum_x += x;
-                    sum_y += y;
-                    sum_sq_x += x * x;
-                    sum_xy += x * y;
-                }
-
-                MultiPrecision<N> r = 1 / (sum_x * sum_x - n * sum_sq_x);
-                MultiPrecision<N> a = (sum_x * sum_xy - sum_sq_x * sum_y) * r;
-                MultiPrecision<N> b = (sum_x * sum_y - n * sum_xy) * r;
+                MultiPrecision<N> r = 1 / (sum_wx * sum_wx - sum_w * sum_wxx);
+                MultiPrecision<N> a = (sum_wx * sum_wxy - sum_wxx * sum_wy) * r;
+                MultiPrecision<N> b = (sum_wx * sum_wy - sum_w * sum_wxy) * r;
 
                 return new Vector<N>(a, b);
             }
             else {
-                MultiPrecision<N> sum_sq_x = 0, sum_xy = 0;
-
-                for (int i = 0; i < Points; i++) {
-                    MultiPrecision<N> x = X[i], y = Y[i];
-
-                    sum_sq_x += x * x;
-                    sum_xy += x * y;
-                }
-
-                return new Vector<N>(sum_xy / sum_sq_x);
+                return new Vector<N>(sum_wxy / sum_wxx);
             }
         }
     }

@@ -7,7 +7,7 @@ namespace MultiPrecisionCurveFitting {
         private readonly FittingFunction<N> func;
 
         /// <summary>コンストラクタ</summary>
-        public LevenbergMarquardtFitter(IReadOnlyList<MultiPrecision<N>> xs, IReadOnlyList<MultiPrecision<N>> ys, FittingFunction<N> func)
+        public LevenbergMarquardtFitter(Vector<N> xs, Vector<N> ys, FittingFunction<N> func)
             : base(xs, ys, func.Parameters) {
 
             this.func = func;

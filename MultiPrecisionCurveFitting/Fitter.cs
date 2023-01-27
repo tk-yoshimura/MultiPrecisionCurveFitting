@@ -6,10 +6,10 @@ namespace MultiPrecisionCurveFitting {
     public abstract class Fitter<N> where N : struct, IConstant {
 
         /// <summary>フィッティング対象の独立変数</summary>
-        public IReadOnlyList<MultiPrecision<N>> X { get; private set; }
+        public Vector<N> X { get; private set; }
 
         /// <summary>フィッティング対象の従属変数</summary>
-        public IReadOnlyList<MultiPrecision<N>> Y { get; private set; }
+        public Vector<N> Y { get; private set; }
 
         /// <summary>フィッティング対象数</summary>
         public int Points { get; private set; }
@@ -18,58 +18,39 @@ namespace MultiPrecisionCurveFitting {
         public int Parameters { get; private set; }
 
         /// <summary>コンストラクタ</summary>
-        public Fitter(IReadOnlyList<MultiPrecision<N>> xs, IReadOnlyList<MultiPrecision<N>> ys, int parameters) {
-            if (xs is null) {
-                throw new ArgumentNullException(nameof(xs));
-            }
-            if (ys is null) {
-                throw new ArgumentNullException(nameof(ys));
-            }
-            if (xs.Count < parameters || xs.Count != ys.Count) {
-                throw new ArgumentException($"{nameof(xs.Count)}, {nameof(ys.Count)}");
+        public Fitter(Vector<N> xs, Vector<N> ys, int parameters) {
+            if (xs.Dim < parameters || xs.Dim != ys.Dim) {
+                throw new ArgumentException($"{nameof(xs.Dim)}, {nameof(ys.Dim)}");
             }
             if (parameters < 1) {
-                throw new ArgumentException(null, nameof(parameters));
+                throw new ArgumentOutOfRangeException(nameof(parameters));
             }
 
-            this.X = xs;
-            this.Y = ys;
-            this.Points = xs.Count;
+            this.X = xs.Copy();
+            this.Y = ys.Copy();
+            this.Points = xs.Dim;
             this.Parameters = parameters;
         }
 
         /// <summary>誤差二乗和</summary>
         public MultiPrecision<N> Cost(Vector<N> parameters) {
-            if (parameters is null) {
-                throw new ArgumentNullException(nameof(parameters));
-            }
             if (parameters.Dim != Parameters) {
-                throw new ArgumentException(null, nameof(parameters));
+                throw new ArgumentException("Illegal length.", nameof(parameters));
             }
 
             Vector<N> errors = Error(parameters);
-            MultiPrecision<N> cost = 0;
-            for (int i = 0; i < errors.Dim; i++) {
-                cost += errors[i] * errors[i];
-            }
+            MultiPrecision<N> cost = errors.SquareNorm;
 
             return cost;
         }
 
         /// <summary>誤差</summary>
         public Vector<N> Error(Vector<N> parameters) {
-            if (parameters is null) {
-                throw new ArgumentNullException(nameof(parameters));
-            }
             if (parameters.Dim != Parameters) {
-                throw new ArgumentException(null, nameof(parameters));
+                throw new ArgumentException("Illegal length.", nameof(parameters));
             }
 
-            Vector<N> errors = Vector<N>.Zero(Points);
-
-            for (int i = 0; i < Points; i++) {
-                errors[i] = FittingValue(X[i], parameters) - Y[i];
-            }
+            Vector<N> errors = FittingValue(X, parameters) - Y;
 
             return errors;
         }
@@ -78,14 +59,14 @@ namespace MultiPrecisionCurveFitting {
         public abstract MultiPrecision<N> FittingValue(MultiPrecision<N> x, Vector<N> parameters);
 
         /// <summary>フィッティング値</summary>
-        public MultiPrecision<N>[] FittingValue(IReadOnlyList<MultiPrecision<N>> xs, Vector<N> parameters) {
-            List<MultiPrecision<N>> ys = new();
+        public Vector<N> FittingValue(Vector<N> xs, Vector<N> parameters) {
+            MultiPrecision<N>[] ys = new MultiPrecision<N>[xs.Dim];
 
-            for (int i = 0; i < xs.Count; i++) {
-                ys.Add(FittingValue(xs[i], parameters));
+            for (int i = 0; i < xs.Dim; i++) {
+                ys[i] = FittingValue(xs[i], parameters);
             }
 
-            return ys.ToArray();
+            return ys;
         }
     }
 }
