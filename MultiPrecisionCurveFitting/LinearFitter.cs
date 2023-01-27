@@ -7,16 +7,15 @@ namespace MultiPrecisionCurveFitting {
     public class LinearFitter<N> : Fitter<N> where N : struct, IConstant {
 
         private readonly SumTable<N> sum_table;
-
-        /// <summary>y切片を有効にするか</summary>
-        public bool EnableIntercept { get; private set; }
+        private readonly MultiPrecision<N>? intercept;
 
         /// <summary>コンストラクタ</summary>
-        public LinearFitter(Vector<N> xs, Vector<N> ys, bool enable_intercept)
-            : base(xs, ys, enable_intercept ? 2 : 1) {
+        public LinearFitter(Vector<N> xs, Vector<N> ys, MultiPrecision<N>? intercept = null)
+            : base(xs, (intercept is null) ? ys : ys.Select(y => y.val - intercept).ToArray(),
+                  parameters: 2) {
 
-            this.EnableIntercept = enable_intercept;
             this.sum_table = new(X, Y);
+            this.intercept = intercept;
         }
 
         /// <summary>フィッティング値</summary>
@@ -25,12 +24,7 @@ namespace MultiPrecisionCurveFitting {
                 throw new ArgumentException("Illegal length.", nameof(parameters));
             }
 
-            if (EnableIntercept) {
-                return parameters[0] + parameters[1] * x;
-            }
-            else {
-                return parameters[0] * x;
-            }
+            return parameters[0] + parameters[1] * x;
         }
 
         /// <summary>フィッティング</summary>
@@ -39,7 +33,7 @@ namespace MultiPrecisionCurveFitting {
 
             MultiPrecision<N> sum_wxx = sum_table[2, 0], sum_wxy = sum_table[1, 1];
 
-            if (EnableIntercept) {
+            if (intercept is null) {
                 MultiPrecision<N> sum_w = sum_table[0, 0], sum_wx = sum_table[1, 0], sum_wy = sum_table[0, 1];
 
                 MultiPrecision<N> r = 1 / (sum_wx * sum_wx - sum_w * sum_wxx);
@@ -49,7 +43,7 @@ namespace MultiPrecisionCurveFitting {
                 return new Vector<N>(a, b);
             }
             else {
-                return new Vector<N>(sum_wxy / sum_wxx);
+                return new Vector<N>(intercept, sum_wxy / sum_wxx);
             }
         }
     }

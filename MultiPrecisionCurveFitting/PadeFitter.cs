@@ -19,15 +19,19 @@ namespace MultiPrecisionCurveFitting {
         /// <param name="intercept">切片</param>
         public PadeFitter(Vector<N> xs, Vector<N> ys, int numer, int denom, MultiPrecision<N>? intercept = null)
             : base(xs, ys,
-                  (numer >= 2 && denom >= 2) ? (numer + denom) : throw new ArgumentOutOfRangeException($"{nameof(numer)},{nameof(denom)}")) {
+                  parameters: (numer >= 2 && denom >= 2) ? (numer + denom) : throw new ArgumentOutOfRangeException($"{nameof(numer)},{nameof(denom)}")) {
 
-            this.intercept = intercept;
             this.sum_table = new(X, Y);
+            this.intercept = intercept;
             this.Numer = numer;
             this.Denom = denom;
         }
 
         public override MultiPrecision<N> FittingValue(MultiPrecision<N> x, Vector<N> parameters) {
+            if (parameters.Dim != Parameters) {
+                throw new ArgumentException("Illegal length.", nameof(parameters));
+            }
+
             (MultiPrecision<N> numer, MultiPrecision<N> denom) = Fraction(x, parameters);
 
             MultiPrecision<N> y = numer / denom;
@@ -54,12 +58,14 @@ namespace MultiPrecisionCurveFitting {
 
         /// <summary>フィッティング</summary>
         public Vector<N> ExecuteFitting(Vector<N>? weights = null) {
+            bool enable_intercept = intercept is null;
+
             sum_table.W = weights;
             (Matrix<N> m, Vector<N> v) = GenerateTable(sum_table, Numer, Denom);
 
-            Vector<N> parameters = Vector<N>.Zero(Numer + Denom);
+            Vector<N> parameters = Vector<N>.Zero(Parameters);
 
-            if (intercept is null) {
+            if (enable_intercept) {
                 Vector<N> x = Matrix<N>.Solve(m, v);
 
                 parameters[..Numer] = x[..Numer];

@@ -7,55 +7,57 @@ namespace MultiPrecisionCurveFitting {
     public class PolynomialFitter<N> : Fitter<N> where N : struct, IConstant {
 
         private readonly SumTable<N> sum_table;
+        private readonly MultiPrecision<N>? intercept;
 
         /// <summary>次数</summary>
         public int Degree {
             get; private set;
         }
 
-        /// <summary>y切片を有効にするか</summary>
-        public bool EnableIntercept { get; set; }
-
         /// <summary>コンストラクタ</summary>
-        public PolynomialFitter(Vector<N> xs, Vector<N> ys, int degree, bool enable_intercept)
-            : base(xs, ys, checked(degree + (enable_intercept ? 1 : 0))) {
+        public PolynomialFitter(Vector<N> xs, Vector<N> ys, int degree, MultiPrecision<N>? intercept = null)
+            : base(xs, (intercept is null) ? ys : ys.Select(y => y.val - intercept).ToArray(), 
+                  parameters: checked(degree + 1)) {
 
-            this.Degree = degree;
-            this.EnableIntercept = enable_intercept;
             this.sum_table = new(X, Y);
+            this.intercept = intercept;
+            this.Degree = degree;
         }
 
         /// <summary>フィッティング値</summary>
-        public override MultiPrecision<N> FittingValue(MultiPrecision<N> x, Vector<N> coefficients) {
-            if (EnableIntercept) {
-                MultiPrecision<N> y = coefficients[coefficients.Dim - 1];
-
-                for (int i = coefficients.Dim - 2; i >= 0; i--) {
-                    y = y * x + coefficients[i];
-                }
-
-                return y;
+        public override MultiPrecision<N> FittingValue(MultiPrecision<N> x, Vector<N> parameters) {
+            if (parameters.Dim != Parameters) {
+                throw new ArgumentException("Illegal length.", nameof(parameters));
             }
-            else {
-                MultiPrecision<N> y = coefficients[coefficients.Dim - 1];
 
-                for (int i = coefficients.Dim - 2; i >= 0; i--) {
-                    y = y * x + coefficients[i];
-                }
-                y *= x;
+            MultiPrecision<N> y = parameters[parameters.Dim - 1];
 
-                return y;
+            for (int i = parameters.Dim - 2; i >= 0; i--) {
+                y = y * x + parameters[i];
             }
+
+            return y;
         }
 
         /// <summary>フィッティング</summary>
         public Vector<N> ExecuteFitting(Vector<N>? weights = null) {
+            bool enable_intercept = intercept is null;
+
             sum_table.W = weights;
-            (Matrix<N> m, Vector<N> v) = GenerateTable(sum_table, Degree, EnableIntercept);
+            (Matrix<N> m, Vector<N> v) = PolynomialFitter<N>.GenerateTable(sum_table, Degree, enable_intercept);
 
-            Vector<N> parameters = Matrix<N>.Solve(m, v);
+            if (enable_intercept) {
+                Vector<N> parameters = Matrix<N>.Solve(m, v);
 
-            return parameters;
+                return parameters;
+            }
+            else {
+                Vector<N> parameters = Vector<N>.Zero(Parameters);
+                parameters[0] = intercept;
+                parameters[1..] = Matrix<N>.Solve(m, v);
+
+                return parameters;
+            }
         }
 
         internal static (Matrix<N> m, Vector<N> v) GenerateTable(SumTable<N> sum_table, int degree, bool enable_intercept) {
