@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MultiPrecision;
-using MultiPrecisionAlgebra;
 
 namespace MultiPrecisionCurveFitting.Tests {
     [TestClass()]

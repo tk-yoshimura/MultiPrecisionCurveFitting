@@ -44,7 +44,7 @@ namespace MultiPrecisionCurveFitting {
             bool enable_intercept = intercept is null;
 
             sum_table.W = weights;
-            (Matrix<N> m, Vector<N> v) = PolynomialFitter<N>.GenerateTable(sum_table, Degree, enable_intercept);
+            (Matrix<N> m, Vector<N> v) = GenerateTable(sum_table, Degree, enable_intercept);
 
             if (enable_intercept) {
                 Vector<N> parameters = Matrix<N>.Solve(m, v);

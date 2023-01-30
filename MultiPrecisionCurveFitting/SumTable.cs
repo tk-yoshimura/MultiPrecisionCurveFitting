@@ -34,13 +34,13 @@ namespace MultiPrecisionCurveFitting {
 
                 for (int i = ys.Count; i < yn; i++) {
                     int yn0 = (i + 1) / 2 - 1, yn1 = i - yn0 - 1;
-                    
+
                     ys.Add(ys[yn0] * ys[yn1]);
                 }
 
                 if (!table.ContainsKey((xn, yn))) {
                     MultiPrecision<N> s;
-                    
+
                     if (xn > 0 && yn > 0) {
                         Vector<N> x = xs[xn - 1], y = ys[yn - 1];
 
