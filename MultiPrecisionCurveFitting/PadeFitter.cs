@@ -57,11 +57,19 @@ namespace MultiPrecisionCurveFitting {
         }
 
         /// <summary>フィッティング</summary>
-        public Vector<N> ExecuteFitting(Vector<N>? weights = null) {
+        public Vector<N> ExecuteFitting(Vector<N>? weights = null, MultiPrecision<N>? norm_cost = null) {
             bool enable_intercept = intercept is null;
 
             sum_table.W = weights;
             (Matrix<N> m, Vector<N> v) = GenerateTable(sum_table, Numer, Denom);
+
+            if (norm_cost is not null) {
+                MultiPrecision<N> c = norm_cost * sum_table[0, 0];
+
+                for (int i = 0; i < m.Rows; i++) {
+                    m[i, i] += c;
+                }
+            }
 
             Vector<N> parameters = Vector<N>.Zero(Parameters);
 

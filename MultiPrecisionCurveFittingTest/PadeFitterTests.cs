@@ -102,6 +102,118 @@ namespace MultiPrecisionCurveFitting.Tests {
         }
 
         [TestMethod()]
+        public void ExecuteFittingWithInterceptWithCostTest() {
+            MultiPrecision<Pow2.N8>[] xs = (new MultiPrecision<Pow2.N8>[1024]).Select((_, i) => MultiPrecision<Pow2.N8>.Div(i, 1024)).ToArray();
+            MultiPrecision<Pow2.N8>[] ys = xs.Select(v => MultiPrecision<Pow2.N8>.Cos(v) - 0.25).ToArray();
+
+            PadeFitter<Pow2.N8> fitter = new(xs, ys, intercept: 0.75, numer: 4, denom: 3);
+
+            Assert.IsTrue(fitter.ExecuteFitting().Norm > fitter.ExecuteFitting(norm_cost: 1e-8).Norm);
+            Assert.IsTrue(fitter.ExecuteFitting(norm_cost: 1e-8).Norm > fitter.ExecuteFitting(norm_cost: 1e-4).Norm);
+            Assert.IsTrue(fitter.ExecuteFitting(norm_cost: 1e-4).Norm > fitter.ExecuteFitting(norm_cost: 1e-2).Norm);
+
+            Vector<Pow2.N8> parameters = fitter.ExecuteFitting(norm_cost: 1e-8);
+
+            Console.WriteLine($"Numer : {parameters[..fitter.Numer]}");
+            Console.WriteLine($"Denom : {parameters[fitter.Numer..]}");
+
+            Assert.AreEqual(0.75, fitter.FittingValue(0, parameters));
+
+            for (int i = 0; i < xs.Length; i++) {
+                Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.FittingValue(xs[i], parameters)) < 1e-4,
+                    $"\nexpected : {ys[i]}\n actual  : {fitter.FittingValue(xs[i], parameters)}"
+                );
+            }
+        }
+
+        [TestMethod()]
+        public void ExecuteFittingWithoutInterceptWithCostTest() {
+            MultiPrecision<Pow2.N8>[] xs = (new MultiPrecision<Pow2.N8>[1024]).Select((_, i) => MultiPrecision<Pow2.N8>.Div(i, 1024)).ToArray();
+            MultiPrecision<Pow2.N8>[] ys = xs.Select(v => MultiPrecision<Pow2.N8>.Cos(v) - 0.25).ToArray();
+
+            PadeFitter<Pow2.N8> fitter = new(xs, ys, numer: 4, denom: 3);
+
+            Assert.IsTrue(fitter.ExecuteFitting().Norm > fitter.ExecuteFitting(norm_cost: 1e-8).Norm);
+            Assert.IsTrue(fitter.ExecuteFitting(norm_cost: 1e-8).Norm > fitter.ExecuteFitting(norm_cost: 1e-4).Norm);
+            Assert.IsTrue(fitter.ExecuteFitting(norm_cost: 1e-4).Norm > fitter.ExecuteFitting(norm_cost: 1e-2).Norm);
+
+            Vector<Pow2.N8> parameters = fitter.ExecuteFitting(norm_cost: 1e-8);
+
+            Console.WriteLine($"Numer : {parameters[..fitter.Numer]}");
+            Console.WriteLine($"Denom : {parameters[fitter.Numer..]}");
+
+            for (int i = 0; i < xs.Length; i++) {
+                Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.FittingValue(xs[i], parameters)) < 1e-4,
+                    $"\nexpected : {ys[i]}\n actual  : {fitter.FittingValue(xs[i], parameters)}"
+                );
+            }
+        }
+
+        [TestMethod()]
+        public void ExecuteWeightedFittingWithInterceptWithCostTest() {
+            MultiPrecision<Pow2.N8>[] xs = (new MultiPrecision<Pow2.N8>[1024]).Select((_, i) => MultiPrecision<Pow2.N8>.Div(i, 1024)).ToArray();
+            MultiPrecision<Pow2.N8>[] ys = xs.Select(v => MultiPrecision<Pow2.N8>.Cos(v) - 0.25).ToArray();
+            MultiPrecision<Pow2.N8>[] ws = xs.Select(v => (MultiPrecision<Pow2.N8>)0.5).ToArray();
+
+            ys[256] = 1e+8;
+            ws[256] = 0;
+
+            PadeFitter<Pow2.N8> fitter = new(xs, ys, intercept: 0.75, numer: 4, denom: 3);
+
+            Assert.IsTrue(fitter.ExecuteFitting(ws).Norm > fitter.ExecuteFitting(ws, norm_cost: 1e-8).Norm);
+            Assert.IsTrue(fitter.ExecuteFitting(ws, norm_cost: 1e-8).Norm > fitter.ExecuteFitting(ws, norm_cost: 1e-4).Norm);
+            Assert.IsTrue(fitter.ExecuteFitting(ws, norm_cost: 1e-4).Norm > fitter.ExecuteFitting(ws, norm_cost: 1e-2).Norm);
+
+            Vector<Pow2.N8> parameters = fitter.ExecuteFitting(ws, norm_cost: 1e-8);
+
+            Console.WriteLine($"Numer : {parameters[..fitter.Numer]}");
+            Console.WriteLine($"Denom : {parameters[fitter.Numer..]}");
+
+            Assert.AreEqual(0.75, fitter.FittingValue(0, parameters));
+
+            for (int i = 0; i < xs.Length; i++) {
+                if (i == 256) {
+                    continue;
+                }
+
+                Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.FittingValue(xs[i], parameters)) < 1e-4,
+                    $"\nexpected : {ys[i]}\n actual  : {fitter.FittingValue(xs[i], parameters)}"
+                );
+            }
+        }
+
+        [TestMethod()]
+        public void ExecuteWeightedFittingWithoutInterceptWithCostTest() {
+            MultiPrecision<Pow2.N8>[] xs = (new MultiPrecision<Pow2.N8>[1024]).Select((_, i) => MultiPrecision<Pow2.N8>.Div(i, 1024)).ToArray();
+            MultiPrecision<Pow2.N8>[] ys = xs.Select(v => MultiPrecision<Pow2.N8>.Cos(v) - 0.25).ToArray();
+            MultiPrecision<Pow2.N8>[] ws = xs.Select(v => (MultiPrecision<Pow2.N8>)0.5).ToArray();
+
+            ys[256] = 1e+8;
+            ws[256] = 0;
+
+            PadeFitter<Pow2.N8> fitter = new(xs, ys, numer: 4, denom: 3);
+
+            Assert.IsTrue(fitter.ExecuteFitting(ws).Norm > fitter.ExecuteFitting(ws, norm_cost: 1e-8).Norm);
+            Assert.IsTrue(fitter.ExecuteFitting(ws, norm_cost: 1e-8).Norm > fitter.ExecuteFitting(ws, norm_cost: 1e-4).Norm);
+            Assert.IsTrue(fitter.ExecuteFitting(ws, norm_cost: 1e-4).Norm > fitter.ExecuteFitting(ws, norm_cost: 1e-2).Norm);
+
+            Vector<Pow2.N8> parameters = fitter.ExecuteFitting(ws, norm_cost: 1e-8);
+
+            Console.WriteLine($"Numer : {parameters[..fitter.Numer]}");
+            Console.WriteLine($"Denom : {parameters[fitter.Numer..]}");
+
+            for (int i = 0; i < xs.Length; i++) {
+                if (i == 256) {
+                    continue;
+                }
+
+                Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.FittingValue(xs[i], parameters)) < 1e-4,
+                    $"\nexpected : {ys[i]}\n actual  : {fitter.FittingValue(xs[i], parameters)}"
+                );
+            }
+        }
+
+        [TestMethod()]
         public void GenerateTableTest() {
             (MultiPrecision<Pow2.N4> x, MultiPrecision<Pow2.N4> y)[] vs = new (MultiPrecision<Pow2.N4>, MultiPrecision<Pow2.N4>)[] {
                 (2, 11), (3, 13), (5, 17), (7, 19)
