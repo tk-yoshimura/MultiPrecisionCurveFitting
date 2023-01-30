@@ -21,7 +21,7 @@ namespace MultiPrecisionCurveFitting {
         /// <summary>フィッティング値</summary>
         public override MultiPrecision<N> FittingValue(MultiPrecision<N> x, Vector<N> parameters) {
             if (parameters.Dim != Parameters) {
-                throw new ArgumentException("Illegal length.", nameof(parameters));
+                throw new ArgumentException("invalid size", nameof(parameters));
             }
 
             return parameters[0] + parameters[1] * x;

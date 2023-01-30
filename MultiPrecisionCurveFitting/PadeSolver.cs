@@ -16,7 +16,7 @@ namespace MultiPrecisionCurveFitting {
                 throw new ArgumentOutOfRangeException(nameof(n));
             }
             if (cs.Dim != checked(m + n + 1)) {
-                throw new ArgumentException("Illegal length.", nameof(cs));
+                throw new ArgumentException("invalid size", nameof(cs));
             }
 
             int k = m + n;

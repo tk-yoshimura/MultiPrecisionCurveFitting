@@ -19,7 +19,10 @@ namespace MultiPrecisionCurveFitting {
         /// <param name="intercept">切片</param>
         public PadeFitter(Vector<N> xs, Vector<N> ys, int numer, int denom, MultiPrecision<N>? intercept = null)
             : base(xs, ys,
-                  parameters: (numer >= 2 && denom >= 2) ? (numer + denom) : throw new ArgumentOutOfRangeException($"{nameof(numer)},{nameof(denom)}")) {
+                  parameters: 
+                  (numer >= 2 && denom >= 2)
+                      ? (numer + denom)
+                      : throw new ArgumentOutOfRangeException($"{nameof(numer)},{nameof(denom)}")) {
 
             this.sum_table = new(X, Y);
             this.intercept = intercept;
@@ -29,7 +32,7 @@ namespace MultiPrecisionCurveFitting {
 
         public override MultiPrecision<N> FittingValue(MultiPrecision<N> x, Vector<N> parameters) {
             if (parameters.Dim != Parameters) {
-                throw new ArgumentException("Illegal length.", nameof(parameters));
+                throw new ArgumentException("invalid size", nameof(parameters));
             }
 
             (MultiPrecision<N> numer, MultiPrecision<N> denom) = Fraction(x, parameters);

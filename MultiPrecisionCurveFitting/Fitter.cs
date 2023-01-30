@@ -20,7 +20,7 @@ namespace MultiPrecisionCurveFitting {
         /// <summary>コンストラクタ</summary>
         public Fitter(Vector<N> xs, Vector<N> ys, int parameters) {
             if (xs.Dim < parameters || xs.Dim != ys.Dim) {
-                throw new ArgumentException($"{nameof(xs.Dim)}, {nameof(ys.Dim)}");
+                throw new ArgumentException("mismatch size", $"{nameof(xs)},{nameof(ys)}");
             }
             if (parameters < 1) {
                 throw new ArgumentOutOfRangeException(nameof(parameters));
@@ -35,7 +35,7 @@ namespace MultiPrecisionCurveFitting {
         /// <summary>誤差二乗和</summary>
         public MultiPrecision<N> Cost(Vector<N> parameters) {
             if (parameters.Dim != Parameters) {
-                throw new ArgumentException("Illegal length.", nameof(parameters));
+                throw new ArgumentException("invalid size", nameof(parameters));
             }
 
             Vector<N> errors = Error(parameters);
@@ -47,7 +47,7 @@ namespace MultiPrecisionCurveFitting {
         /// <summary>誤差</summary>
         public Vector<N> Error(Vector<N> parameters) {
             if (parameters.Dim != Parameters) {
-                throw new ArgumentException("Illegal length.", nameof(parameters));
+                throw new ArgumentException("invalid size", nameof(parameters));
             }
 
             Vector<N> errors = FittingValue(X, parameters) - Y;
