@@ -30,31 +30,23 @@ namespace MultiPrecisionCurveFitting {
                 throw new ArgumentException("invalid size", nameof(parameters));
             }
 
-            MultiPrecision<N> y = parameters[parameters.Dim - 1];
-
-            for (int i = parameters.Dim - 2; i >= 0; i--) {
-                y = y * x + parameters[i];
-            }
+            MultiPrecision<N> y = Vector<N>.Polynomial(x, parameters);
 
             return y;
         }
 
         /// <summary>フィッティング</summary>
         public Vector<N> ExecuteFitting(Vector<N>? weights = null) {
-            bool enable_intercept = intercept is null;
-
             sum_table.W = weights;
-            (Matrix<N> m, Vector<N> v) = GenerateTable(sum_table, Degree, enable_intercept);
+            (Matrix<N> m, Vector<N> v) = GenerateTable(sum_table, Degree, enable_intercept: intercept is null);
 
-            if (enable_intercept) {
+            if (intercept is null) {
                 Vector<N> parameters = Matrix<N>.Solve(m, v);
 
                 return parameters;
             }
             else {
-                Vector<N> parameters = Vector<N>.Zero(Parameters);
-                parameters[0] = intercept;
-                parameters[1..] = Matrix<N>.Solve(m, v);
+                Vector<N> parameters = Vector<N>.Concat(intercept, Matrix<N>.Solve(m, v));
 
                 return parameters;
             }

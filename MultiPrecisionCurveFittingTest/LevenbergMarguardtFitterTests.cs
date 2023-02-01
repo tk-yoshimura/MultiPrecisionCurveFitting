@@ -7,9 +7,6 @@ namespace MultiPrecisionCurveFitting.Tests {
     public class LevenbergMarquardtFitterTests {
         [TestMethod()]
         public void ExecuteFittingTest() {
-            MultiPrecision<Pow2.N8>[] xs = { 1, 3, 4, 7 }, ys = new MultiPrecision<Pow2.N8>[xs.Length];
-            Vector<Pow2.N8> p = new(2, 3);
-
             static MultiPrecision<Pow2.N8> fitting_func(MultiPrecision<Pow2.N8> x, Vector<Pow2.N8> parameter) {
                 MultiPrecision<Pow2.N8> a = parameter[0], b = parameter[1];
 
@@ -24,9 +21,9 @@ namespace MultiPrecisionCurveFitting.Tests {
                 return new Vector<Pow2.N8>(b * x * MultiPrecision<Pow2.N8>.Exp(-a * x) / (v * v), 1 / v);
             }
 
-            for (int i = 0; i < xs.Length; i++) {
-                ys[i] = fitting_func(xs[i], p);
-            }
+            Vector<Pow2.N8> p = new(2, 3);
+            MultiPrecision<Pow2.N8>[] xs = { 1, 3, 4, 7 };
+            MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(xs, x => fitting_func(x, p));
 
             LevenbergMarquardtFitter<Pow2.N8> fitter = new(xs, ys, new FittingFunction<Pow2.N8>(2, fitting_func, fitting_diff_func));
 
@@ -37,10 +34,6 @@ namespace MultiPrecisionCurveFitting.Tests {
 
         [TestMethod()]
         public void ExecuteWeightedFittingTest() {
-            MultiPrecision<Pow2.N8>[] xs = { 1, 3, 4, 7, 8 }, ys = new MultiPrecision<Pow2.N8>[xs.Length];
-            MultiPrecision<Pow2.N8>[] ws = { 0.5, 0.75, 0, 0.75, 0.5 };
-            Vector<Pow2.N8> p = new(2, 3);
-
             static MultiPrecision<Pow2.N8> fitting_func(MultiPrecision<Pow2.N8> x, Vector<Pow2.N8> parameter) {
                 MultiPrecision<Pow2.N8> a = parameter[0], b = parameter[1];
 
@@ -55,10 +48,12 @@ namespace MultiPrecisionCurveFitting.Tests {
                 return new Vector<Pow2.N8>(b * x * MultiPrecision<Pow2.N8>.Exp(-a * x) / (v * v), 1 / v);
             }
 
-            for (int i = 0; i < xs.Length; i++) {
-                ys[i] = fitting_func(xs[i], p);
-            }
+            Vector<Pow2.N8> p = new(2, 3);
+            MultiPrecision<Pow2.N8>[] xs = { 1, 3, 4, 7, 8 };
+            MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(xs, x => fitting_func(x, p));
             ys[2] = 1e+8;
+
+            Vector<Pow2.N8> ws = new(0.5, 0.75, 0, 0.75, 0.5);
 
             LevenbergMarquardtFitter<Pow2.N8> fitter = new(xs, ys, new FittingFunction<Pow2.N8>(2, fitting_func, fitting_diff_func));
 

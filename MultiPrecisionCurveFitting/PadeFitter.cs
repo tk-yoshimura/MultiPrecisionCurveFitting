@@ -19,7 +19,7 @@ namespace MultiPrecisionCurveFitting {
         /// <param name="intercept">切片</param>
         public PadeFitter(Vector<N> xs, Vector<N> ys, int numer, int denom, MultiPrecision<N>? intercept = null)
             : base(xs, ys,
-                  parameters: 
+                  parameters:
                   (numer >= 2 && denom >= 2)
                       ? (numer + denom)
                       : throw new ArgumentOutOfRangeException($"{nameof(numer)},{nameof(denom)}")) {
@@ -42,27 +42,15 @@ namespace MultiPrecisionCurveFitting {
             return y;
         }
 
-        protected static MultiPrecision<N> Polynomial(MultiPrecision<N> x, Vector<N> coefs) {
-            MultiPrecision<N> y = coefs[^1];
-
-            for (int i = coefs.Dim - 2; i >= 0; i--) {
-                y = x * y + coefs[i];
-            }
-
-            return y;
-        }
-
         public (MultiPrecision<N> numer, MultiPrecision<N> denom) Fraction(MultiPrecision<N> x, Vector<N> parameters) {
-            MultiPrecision<N> n = Polynomial(x, parameters[..Numer]);
-            MultiPrecision<N> d = Polynomial(x, parameters[Numer..]);
+            MultiPrecision<N> n = Vector<N>.Polynomial(x, parameters[..Numer]);
+            MultiPrecision<N> d = Vector<N>.Polynomial(x, parameters[Numer..]);
 
             return (n, d);
         }
 
         /// <summary>フィッティング</summary>
         public Vector<N> ExecuteFitting(Vector<N>? weights = null, MultiPrecision<N>? norm_cost = null) {
-            bool enable_intercept = intercept is null;
-
             sum_table.W = weights;
             (Matrix<N> m, Vector<N> v) = GenerateTable(sum_table, Numer, Denom);
 
@@ -74,14 +62,12 @@ namespace MultiPrecisionCurveFitting {
                 }
             }
 
-            Vector<N> parameters = Vector<N>.Zero(Parameters);
-
-            if (enable_intercept) {
+            if (intercept is null) {
                 Vector<N> x = Matrix<N>.Solve(m, v);
 
-                parameters[..Numer] = x[..Numer];
-                parameters[Numer] = 1;
-                parameters[(Numer + 1)..] = x[Numer..];
+                Vector<N> parameters = Vector<N>.Concat(x[..Numer], 1, x[Numer..]);
+
+                return parameters;
             }
             else {
                 v = v[1..] - intercept * m[0, 1..];
@@ -89,13 +75,10 @@ namespace MultiPrecisionCurveFitting {
 
                 Vector<N> x = Matrix<N>.Solve(m, v);
 
-                parameters[0] = intercept;
-                parameters[1..Numer] = x[..(Numer - 1)];
-                parameters[Numer] = 1;
-                parameters[(Numer + 1)..] = x[(Numer - 1)..];
-            }
+                Vector<N> parameters = Vector<N>.Concat(intercept, x[..(Numer - 1)], 1, x[(Numer - 1)..]);
 
-            return parameters;
+                return parameters;
+            }
         }
 
         internal static (Matrix<N> m, Vector<N> v) GenerateTable(SumTable<N> sum_table, int numer, int denom) {

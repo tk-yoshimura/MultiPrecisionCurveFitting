@@ -7,8 +7,8 @@ namespace MultiPrecisionCurveFitting.Tests {
     public class PadeFitterTests {
         [TestMethod()]
         public void ExecuteFittingWithInterceptTest() {
-            MultiPrecision<Pow2.N8>[] xs = (new MultiPrecision<Pow2.N8>[1024]).Select((_, i) => MultiPrecision<Pow2.N8>.Div(i, 1024)).ToArray();
-            MultiPrecision<Pow2.N8>[] ys = xs.Select(v => MultiPrecision<Pow2.N8>.Cos(v) - 0.25).ToArray();
+            MultiPrecision<Pow2.N8>[] xs = Vector<Pow2.N8>.Arange(1024) / 1024;
+            MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(xs, x => MultiPrecision<Pow2.N8>.Cos(x) - 0.25);
 
             PadeFitter<Pow2.N8> fitter = new(xs, ys, intercept: 0.75, numer: 4, denom: 3);
 
@@ -28,8 +28,8 @@ namespace MultiPrecisionCurveFitting.Tests {
 
         [TestMethod()]
         public void ExecuteFittingWithoutInterceptTest() {
-            MultiPrecision<Pow2.N8>[] xs = (new MultiPrecision<Pow2.N8>[1024]).Select((_, i) => MultiPrecision<Pow2.N8>.Div(i, 1024)).ToArray();
-            MultiPrecision<Pow2.N8>[] ys = xs.Select(v => MultiPrecision<Pow2.N8>.Cos(v) - 0.25).ToArray();
+            MultiPrecision<Pow2.N8>[] xs = Vector<Pow2.N8>.Arange(1024) / 1024;
+            MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(xs, x => MultiPrecision<Pow2.N8>.Cos(x) - 0.25);
 
             PadeFitter<Pow2.N8> fitter = new(xs, ys, numer: 4, denom: 3);
 
@@ -47,9 +47,9 @@ namespace MultiPrecisionCurveFitting.Tests {
 
         [TestMethod()]
         public void ExecuteWeightedFittingWithInterceptTest() {
-            MultiPrecision<Pow2.N8>[] xs = (new MultiPrecision<Pow2.N8>[1024]).Select((_, i) => MultiPrecision<Pow2.N8>.Div(i, 1024)).ToArray();
-            MultiPrecision<Pow2.N8>[] ys = xs.Select(v => MultiPrecision<Pow2.N8>.Cos(v) - 0.25).ToArray();
-            MultiPrecision<Pow2.N8>[] ws = xs.Select(v => (MultiPrecision<Pow2.N8>)0.5).ToArray();
+            MultiPrecision<Pow2.N8>[] xs = Vector<Pow2.N8>.Arange(1024) / 1024;
+            MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(xs, x => MultiPrecision<Pow2.N8>.Cos(x) - 0.25);
+            MultiPrecision<Pow2.N8>[] ws = Vector<Pow2.N8>.Fill(xs.Length, value: 0.5);
 
             ys[256] = 1e+8;
             ws[256] = 0;
@@ -76,9 +76,9 @@ namespace MultiPrecisionCurveFitting.Tests {
 
         [TestMethod()]
         public void ExecuteWeightedFittingWithoutInterceptTest() {
-            MultiPrecision<Pow2.N8>[] xs = (new MultiPrecision<Pow2.N8>[1024]).Select((_, i) => MultiPrecision<Pow2.N8>.Div(i, 1024)).ToArray();
-            MultiPrecision<Pow2.N8>[] ys = xs.Select(v => MultiPrecision<Pow2.N8>.Cos(v) - 0.25).ToArray();
-            MultiPrecision<Pow2.N8>[] ws = xs.Select(v => (MultiPrecision<Pow2.N8>)0.5).ToArray();
+            MultiPrecision<Pow2.N8>[] xs = Vector<Pow2.N8>.Arange(1024) / 1024;
+            MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(xs, x => MultiPrecision<Pow2.N8>.Cos(x) - 0.25);
+            MultiPrecision<Pow2.N8>[] ws = Vector<Pow2.N8>.Fill(xs.Length, value: 0.5);
 
             ys[256] = 1e+8;
             ws[256] = 0;
@@ -103,8 +103,8 @@ namespace MultiPrecisionCurveFitting.Tests {
 
         [TestMethod()]
         public void ExecuteFittingWithInterceptWithCostTest() {
-            MultiPrecision<Pow2.N8>[] xs = (new MultiPrecision<Pow2.N8>[1024]).Select((_, i) => MultiPrecision<Pow2.N8>.Div(i, 1024)).ToArray();
-            MultiPrecision<Pow2.N8>[] ys = xs.Select(v => MultiPrecision<Pow2.N8>.Cos(v) - 0.25).ToArray();
+            MultiPrecision<Pow2.N8>[] xs = Vector<Pow2.N8>.Arange(1024) / 1024;
+            MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(xs, x => MultiPrecision<Pow2.N8>.Cos(x) - 0.25);
 
             PadeFitter<Pow2.N8> fitter = new(xs, ys, intercept: 0.75, numer: 4, denom: 3);
 
@@ -128,8 +128,8 @@ namespace MultiPrecisionCurveFitting.Tests {
 
         [TestMethod()]
         public void ExecuteFittingWithoutInterceptWithCostTest() {
-            MultiPrecision<Pow2.N8>[] xs = (new MultiPrecision<Pow2.N8>[1024]).Select((_, i) => MultiPrecision<Pow2.N8>.Div(i, 1024)).ToArray();
-            MultiPrecision<Pow2.N8>[] ys = xs.Select(v => MultiPrecision<Pow2.N8>.Cos(v) - 0.25).ToArray();
+            MultiPrecision<Pow2.N8>[] xs = Vector<Pow2.N8>.Arange(1024) / 1024;
+            MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(xs, x => MultiPrecision<Pow2.N8>.Cos(x) - 0.25);
 
             PadeFitter<Pow2.N8> fitter = new(xs, ys, numer: 4, denom: 3);
 
@@ -151,9 +151,9 @@ namespace MultiPrecisionCurveFitting.Tests {
 
         [TestMethod()]
         public void ExecuteWeightedFittingWithInterceptWithCostTest() {
-            MultiPrecision<Pow2.N8>[] xs = (new MultiPrecision<Pow2.N8>[1024]).Select((_, i) => MultiPrecision<Pow2.N8>.Div(i, 1024)).ToArray();
-            MultiPrecision<Pow2.N8>[] ys = xs.Select(v => MultiPrecision<Pow2.N8>.Cos(v) - 0.25).ToArray();
-            MultiPrecision<Pow2.N8>[] ws = xs.Select(v => (MultiPrecision<Pow2.N8>)0.5).ToArray();
+            MultiPrecision<Pow2.N8>[] xs = Vector<Pow2.N8>.Arange(1024) / 1024;
+            MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(xs, x => MultiPrecision<Pow2.N8>.Cos(x) - 0.25);
+            MultiPrecision<Pow2.N8>[] ws = Vector<Pow2.N8>.Fill(xs.Length, value: 0.5);
 
             ys[256] = 1e+8;
             ws[256] = 0;
@@ -184,9 +184,9 @@ namespace MultiPrecisionCurveFitting.Tests {
 
         [TestMethod()]
         public void ExecuteWeightedFittingWithoutInterceptWithCostTest() {
-            MultiPrecision<Pow2.N8>[] xs = (new MultiPrecision<Pow2.N8>[1024]).Select((_, i) => MultiPrecision<Pow2.N8>.Div(i, 1024)).ToArray();
-            MultiPrecision<Pow2.N8>[] ys = xs.Select(v => MultiPrecision<Pow2.N8>.Cos(v) - 0.25).ToArray();
-            MultiPrecision<Pow2.N8>[] ws = xs.Select(v => (MultiPrecision<Pow2.N8>)0.5).ToArray();
+            MultiPrecision<Pow2.N8>[] xs = Vector<Pow2.N8>.Arange(1024) / 1024;
+            MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(xs, x => MultiPrecision<Pow2.N8>.Cos(x) - 0.25);
+            MultiPrecision<Pow2.N8>[] ws = Vector<Pow2.N8>.Fill(xs.Length, value: 0.5);
 
             ys[256] = 1e+8;
             ws[256] = 0;

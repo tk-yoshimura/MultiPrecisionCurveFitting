@@ -35,8 +35,7 @@ namespace MultiPrecisionCurveFitting {
             }
 
             Vector<N> v = Matrix<N>.Solve(a, c);
-            Vector<N> ms = new MultiPrecision<N>[] { cs[0] }.Concat(((MultiPrecision<N>[])v)[..m]).ToArray();
-            Vector<N> ns = new MultiPrecision<N>[] { 1 }.Concat(((MultiPrecision<N>[])v)[m..]).ToArray();
+            Vector<N> ms = Vector<N>.Concat(cs[0], v[..m]), ns = Vector<N>.Concat(1, v[m..]);
 
             return (ms, ns);
         }
@@ -46,14 +45,7 @@ namespace MultiPrecisionCurveFitting {
         /// <param name="ms">分子係数</param>
         /// <param name="ns">分母係数</param>
         public static MultiPrecision<N> Approx(MultiPrecision<N> a, Vector<N> ms, Vector<N> ns) {
-            MultiPrecision<N> p = ms[^1], q = ns[^1];
-
-            for (int i = ms.Dim - 2; i >= 0; i--) {
-                p = p * a + ms[i];
-            }
-            for (int i = ns.Dim - 2; i >= 0; i--) {
-                q = q * a + ns[i];
-            }
+            MultiPrecision<N> p = Vector<N>.Polynomial(a, ms), q = Vector<N>.Polynomial(a, ns);
 
             MultiPrecision<N> y = p / q;
 
