@@ -1,4 +1,4 @@
-# MultiPrecisionCurveFitting 
+# MultiPrecisionCurveFitting
   Float MultiPrecision Curve Fitting - linear, polynomial, pade, arbitrary function 
 
 ## Requirement
