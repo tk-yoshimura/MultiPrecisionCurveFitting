@@ -39,17 +39,5 @@ namespace MultiPrecisionCurveFitting {
 
             return (ms, ns);
         }
-
-        /// <summary>近似</summary>
-        /// <param name="a">説明変数</param>
-        /// <param name="ms">分子係数</param>
-        /// <param name="ns">分母係数</param>
-        public static MultiPrecision<N> Approx(MultiPrecision<N> a, Vector<N> ms, Vector<N> ns) {
-            MultiPrecision<N> p = Vector<N>.Polynomial(a, ms), q = Vector<N>.Polynomial(a, ns);
-
-            MultiPrecision<N> y = p / q;
-
-            return y;
-        }
     }
 }
