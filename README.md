@@ -13,8 +13,6 @@ AVX2 suppoted CPU. (Intel:Haswell(2013)-, AMD:Excavator(2015)-)
 
 - Import MultiPrecision(https://github.com/tk-yoshimura/MultiPrecision)
 - Import MultiPrecisionAlgebra(https://github.com/tk-yoshimura/MultiPrecisionAlgebra)
-- To install, just import the DLL.
-- This library does not change the environment at all.
 
 ## Usage
 

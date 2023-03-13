@@ -13,8 +13,8 @@
     <PackageReference Include="MSTest.TestAdapter" Version="2.2.10" />
     <PackageReference Include="MSTest.TestFramework" Version="2.2.10" />
     <PackageReference Include="coverlet.collector" Version="3.1.2" />
-    <PackageReference Include="TYoshimura.MultiPrecision" Version="5.1.0" />
-    <PackageReference Include="TYoshimura.MultiPrecision.Algebra" Version="1.2.4" />
+    <PackageReference Include="TYoshimura.MultiPrecision" Version="6.1.0" />
+    <PackageReference Include="TYoshimura.MultiPrecision.Algebra" Version="1.2.6" />
   </ItemGroup>
 
   <ItemGroup>
