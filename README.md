@@ -2,7 +2,7 @@
   MultiPrecision Curve Fitting - linear, polynomial, pade, arbitrary function
 
 ## Requirement
-.NET 6.0
+.NET 7.0
 
 AVX2 suppoted CPU. (Intel:Haswell(2013)-, AMD:Excavator(2015)-)
 
