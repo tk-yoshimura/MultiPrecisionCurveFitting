@@ -2,17 +2,15 @@
   MultiPrecision Curve Fitting - linear, polynomial, pade, arbitrary function
 
 ## Requirement
-.NET 7.0
-
-AVX2 suppoted CPU. (Intel:Haswell(2013)-, AMD:Excavator(2015)-)
+.NET 8.0
+AVX2 suppoted CPU. (Intel:Haswell(2013)-, AMD:Excavator(2015)-)  
+[MultiPrecision](https://github.com/tk-yoshimura/MultiPrecision)  
+[MultiPrecisionAlgebra](https://github.com/tk-yoshimura/MultiPrecisionAlgebra)
 
 ## Install
 
 [Download DLL](https://github.com/tk-yoshimura/MultiPrecisionCurveFitting/releases)  
-[Download Nuget package](https://www.nuget.org/packages/tyoshimura.multiprecision.curvefitting/)
-
-- Import MultiPrecision(https://github.com/tk-yoshimura/MultiPrecision)
-- Import MultiPrecisionAlgebra(https://github.com/tk-yoshimura/MultiPrecisionAlgebra)
+[Download Nuget](https://www.nuget.org/packages/tyoshimura.multiprecision.curvefitting/)
 
 ## Usage
 
