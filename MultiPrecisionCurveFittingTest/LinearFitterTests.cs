@@ -16,6 +16,9 @@ namespace MultiPrecisionCurveFitting.Tests {
             Assert.AreEqual(new Vector<Pow2.N8>(-13, 7), fitter1.ExecuteFitting());
             Assert.AreEqual(new Vector<Pow2.N8>(0, 2), fitter2.ExecuteFitting());
             Assert.AreEqual(new Vector<Pow2.N8>(-13, 7), fitter3.ExecuteFitting());
+
+            Assert.AreEqual(new Vector<Pow2.N8>(0, 0), fitter1.Error(fitter1.ExecuteFitting()));
+            Assert.AreEqual(new Vector<Pow2.N8>(0, 0), fitter3.Error(fitter3.ExecuteFitting()));
         }
 
         [TestMethod()]

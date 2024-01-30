@@ -11,10 +11,9 @@ namespace MultiPrecisionCurveFitting {
 
         /// <summary>コンストラクタ</summary>
         public LinearFitter(Vector<N> xs, Vector<N> ys, MultiPrecision<N>? intercept = null)
-            : base(xs, (intercept is null) ? ys : ys.Select(y => y.val - intercept).ToArray(),
-                  parameters: 2) {
+            : base(xs, ys, parameters: 2) {
 
-            this.sum_table = new(X, Y);
+            this.sum_table = new(X, (intercept is null) ? ys : ys.Select(y => y.val - intercept).ToArray());
             this.intercept = intercept;
         }
 

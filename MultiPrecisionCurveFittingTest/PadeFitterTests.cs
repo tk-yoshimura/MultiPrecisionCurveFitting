@@ -24,6 +24,8 @@ namespace MultiPrecisionCurveFitting.Tests {
                     $"\nexpected : {ys[i]}\n actual  : {fitter.FittingValue(xs[i], parameters)}"
                 );
             }
+
+            Assert.IsTrue(fitter.Error(parameters).Norm < 1e-4);
         }
 
         [TestMethod()]
@@ -43,6 +45,8 @@ namespace MultiPrecisionCurveFitting.Tests {
                     $"\nexpected : {ys[i]}\n actual  : {fitter.FittingValue(xs[i], parameters)}"
                 );
             }
+
+            Assert.IsTrue(fitter.Error(parameters).Norm < 1e-4);
         }
 
         [TestMethod()]

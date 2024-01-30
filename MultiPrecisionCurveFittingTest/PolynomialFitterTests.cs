@@ -16,6 +16,9 @@ namespace MultiPrecisionCurveFitting.Tests {
 
             Assert.IsTrue((fitter1.ExecuteFitting() - p1).Norm < 1e-48);
             Assert.IsTrue((fitter2.ExecuteFitting() - p2).Norm < 1e-48);
+
+            Assert.IsTrue(fitter1.Error(fitter1.ExecuteFitting()).Norm < 1e-48);
+            Assert.IsTrue(fitter2.Error(fitter2.ExecuteFitting()).Norm < 1e-48);
         }
 
         [TestMethod()]

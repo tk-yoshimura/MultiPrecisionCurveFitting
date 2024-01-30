@@ -16,10 +16,9 @@ namespace MultiPrecisionCurveFitting {
 
         /// <summary>コンストラクタ</summary>
         public PolynomialFitter(Vector<N> xs, Vector<N> ys, int degree, MultiPrecision<N>? intercept = null)
-            : base(xs, (intercept is null) ? ys : ys.Select(y => y.val - intercept).ToArray(),
-                  parameters: checked(degree + 1)) {
+            : base(xs, ys, parameters: checked(degree + 1)) {
 
-            this.sum_table = new(X, Y);
+            this.sum_table = new(X, (intercept is null) ? ys : ys.Select(y => y.val - intercept).ToArray());
             this.intercept = intercept;
             this.Degree = degree;
         }
