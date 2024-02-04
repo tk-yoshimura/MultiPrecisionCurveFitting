@@ -4,7 +4,7 @@ using MultiPrecisionAlgebra;
 namespace MultiPrecisionCurveFitting {
     public static class CurveFittingUtils {
         public static IEnumerable<(int m, int n)> EnumeratePadeDegree(int coef_counts, int degree_delta) {
-            ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(coef_counts, 0);
+            ArgumentOutOfRangeException.ThrowIfLessThan(coef_counts, 4);
             ArgumentOutOfRangeException.ThrowIfNegative(degree_delta);
 
             int d = (coef_counts + 1) / 2;
@@ -12,7 +12,7 @@ namespace MultiPrecisionCurveFitting {
             if (coef_counts % 2 == 0 && d > 0) {
                 yield return (d, d);
 
-                for (int k = 1; k <= degree_delta / 2 && k < d; k++) {
+                for (int k = 1; k <= degree_delta / 2 && k + 1 < d; k++) {
                     yield return (d + k, d - k);
                     yield return (d - k, d + k);
                 }
@@ -21,7 +21,7 @@ namespace MultiPrecisionCurveFitting {
                 yield return (d, d - 1);
                 yield return (d - 1, d);
 
-                for (int k = 1; k < (degree_delta + 1) / 2 && k + 1 < d; k++) {
+                for (int k = 1; k < (degree_delta + 1) / 2 && k + 2 < d; k++) {
                     yield return (d + k, d - 1 - k);
                     yield return (d - 1 - k, d + k);
                 }

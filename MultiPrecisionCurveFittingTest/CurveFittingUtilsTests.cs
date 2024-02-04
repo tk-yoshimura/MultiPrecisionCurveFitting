@@ -7,7 +7,7 @@ namespace MultiPrecisionCurveFitting.Tests {
     public class CurveFittingUtilsTests {
         [TestMethod()]
         public void EnumeratePadeDegreeTest() {
-            for (int coef_counts = 1; coef_counts <= 16; coef_counts++) {
+            for (int coef_counts = 4; coef_counts <= 16; coef_counts++) {
                 for (int degree_delta = 0; degree_delta <= 8; degree_delta++) {
                     Console.WriteLine($"{nameof(coef_counts)} = {coef_counts}");
                     Console.WriteLine($"{nameof(degree_delta)} = {degree_delta}");
@@ -17,8 +17,8 @@ namespace MultiPrecisionCurveFitting.Tests {
 
                         Assert.AreEqual(coef_counts, m + n);
                         Assert.IsTrue(Math.Abs(m - n) <= degree_delta);
-                        Assert.IsTrue(m > 0);
-                        Assert.IsTrue(n > 0);
+                        Assert.IsTrue(m > 1);
+                        Assert.IsTrue(n > 1);
                     }
                 }
             }
