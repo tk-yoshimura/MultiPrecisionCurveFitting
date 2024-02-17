@@ -1,5 +1,5 @@
 # MultiPrecisionCurveFitting 
-  MultiPrecision Curve Fitting - linear, polynomial, pade, arbitrary function
+  MultiPrecision Curve Fitting - linear, polynomial, pade, arbitrary function 
 
 ## Requirement
 .NET 8.0
