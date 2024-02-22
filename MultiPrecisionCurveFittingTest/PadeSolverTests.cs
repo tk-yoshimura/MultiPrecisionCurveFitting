@@ -51,10 +51,10 @@ namespace MultiPrecisionCurveFitting.Tests {
 
         [TestMethod()]
         public void LogTest() {
-            MultiPrecision<Pow2.N8>[] cs = new MultiPrecision<Pow2.N8>[]{
+            MultiPrecision<Pow2.N8>[] cs = [
                 0, 1, MultiPrecision<Pow2.N8>.Div(-1, 2), MultiPrecision<Pow2.N8>.Div(1, 3), MultiPrecision<Pow2.N8>.Div(-1, 4),
                 MultiPrecision<Pow2.N8>.Div(1, 5), MultiPrecision<Pow2.N8>.Div(-1, 6), MultiPrecision<Pow2.N8>.Div(1, 7), MultiPrecision<Pow2.N8>.Div(-1, 8),
-            };
+            ];
 
             {
                 (MultiPrecision<Pow2.N8>[] ms, MultiPrecision<Pow2.N8>[] ns) = PadeSolver<Pow2.N8>.Solve(cs[..6], 3, 2);

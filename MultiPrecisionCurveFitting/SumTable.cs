@@ -68,7 +68,7 @@ namespace MultiPrecisionCurveFitting {
             get => w;
             set {
                 if (value is not null && xs[0].Dim != value.Dim) {
-                    throw new ArgumentException("invalid size", nameof(w));
+                    throw new ArgumentException("invalid size", nameof(W));
                 }
 
                 this.w = value;

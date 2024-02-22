@@ -8,7 +8,7 @@ namespace MultiPrecisionCurveFitting.Tests {
         [TestMethod()]
         public void ExecuteFittingWithInterceptTest() {
             MultiPrecision<Pow2.N8>[] xs = Vector<Pow2.N8>.Arange(1024) / 1024;
-            MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(xs, x => MultiPrecision<Pow2.N8>.Cos(x) - 0.25);
+            MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(x => MultiPrecision<Pow2.N8>.Cos(x) - 0.25, xs);
 
             PadeFitter<Pow2.N8> fitter = new(xs, ys, intercept: 0.75, numer: 4, denom: 3);
 
@@ -31,7 +31,7 @@ namespace MultiPrecisionCurveFitting.Tests {
         [TestMethod()]
         public void ExecuteFittingWithoutInterceptTest() {
             MultiPrecision<Pow2.N8>[] xs = Vector<Pow2.N8>.Arange(1024) / 1024;
-            MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(xs, x => MultiPrecision<Pow2.N8>.Cos(x) - 0.25);
+            MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(x => MultiPrecision<Pow2.N8>.Cos(x) - 0.25, xs);
 
             PadeFitter<Pow2.N8> fitter = new(xs, ys, numer: 4, denom: 3);
 
@@ -52,7 +52,7 @@ namespace MultiPrecisionCurveFitting.Tests {
         [TestMethod()]
         public void ExecuteWeightedFittingWithInterceptTest() {
             MultiPrecision<Pow2.N8>[] xs = Vector<Pow2.N8>.Arange(1024) / 1024;
-            MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(xs, x => MultiPrecision<Pow2.N8>.Cos(x) - 0.25);
+            MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(x => MultiPrecision<Pow2.N8>.Cos(x) - 0.25, xs);
             MultiPrecision<Pow2.N8>[] ws = Vector<Pow2.N8>.Fill(xs.Length, value: 0.5);
 
             ys[256] = 1e+8;
@@ -81,7 +81,7 @@ namespace MultiPrecisionCurveFitting.Tests {
         [TestMethod()]
         public void ExecuteWeightedFittingWithoutInterceptTest() {
             MultiPrecision<Pow2.N8>[] xs = Vector<Pow2.N8>.Arange(1024) / 1024;
-            MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(xs, x => MultiPrecision<Pow2.N8>.Cos(x) - 0.25);
+            MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(x => MultiPrecision<Pow2.N8>.Cos(x) - 0.25, xs);
             MultiPrecision<Pow2.N8>[] ws = Vector<Pow2.N8>.Fill(xs.Length, value: 0.5);
 
             ys[256] = 1e+8;
@@ -108,7 +108,7 @@ namespace MultiPrecisionCurveFitting.Tests {
         [TestMethod()]
         public void ExecuteFittingWithInterceptWithCostTest() {
             MultiPrecision<Pow2.N8>[] xs = Vector<Pow2.N8>.Arange(1024) / 1024;
-            MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(xs, x => MultiPrecision<Pow2.N8>.Cos(x) - 0.25);
+            MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(x => MultiPrecision<Pow2.N8>.Cos(x) - 0.25, xs);
 
             PadeFitter<Pow2.N8> fitter = new(xs, ys, intercept: 0.75, numer: 4, denom: 3);
 
@@ -133,7 +133,7 @@ namespace MultiPrecisionCurveFitting.Tests {
         [TestMethod()]
         public void ExecuteFittingWithoutInterceptWithCostTest() {
             MultiPrecision<Pow2.N8>[] xs = Vector<Pow2.N8>.Arange(1024) / 1024;
-            MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(xs, x => MultiPrecision<Pow2.N8>.Cos(x) - 0.25);
+            MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(x => MultiPrecision<Pow2.N8>.Cos(x) - 0.25, xs);
 
             PadeFitter<Pow2.N8> fitter = new(xs, ys, numer: 4, denom: 3);
 
@@ -156,7 +156,7 @@ namespace MultiPrecisionCurveFitting.Tests {
         [TestMethod()]
         public void ExecuteWeightedFittingWithInterceptWithCostTest() {
             MultiPrecision<Pow2.N8>[] xs = Vector<Pow2.N8>.Arange(1024) / 1024;
-            MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(xs, x => MultiPrecision<Pow2.N8>.Cos(x) - 0.25);
+            MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(x => MultiPrecision<Pow2.N8>.Cos(x) - 0.25, xs);
             MultiPrecision<Pow2.N8>[] ws = Vector<Pow2.N8>.Fill(xs.Length, value: 0.5);
 
             ys[256] = 1e+8;
@@ -189,7 +189,7 @@ namespace MultiPrecisionCurveFitting.Tests {
         [TestMethod()]
         public void ExecuteWeightedFittingWithoutInterceptWithCostTest() {
             MultiPrecision<Pow2.N8>[] xs = Vector<Pow2.N8>.Arange(1024) / 1024;
-            MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(xs, x => MultiPrecision<Pow2.N8>.Cos(x) - 0.25);
+            MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(x => MultiPrecision<Pow2.N8>.Cos(x) - 0.25, xs);
             MultiPrecision<Pow2.N8>[] ws = Vector<Pow2.N8>.Fill(xs.Length, value: 0.5);
 
             ys[256] = 1e+8;

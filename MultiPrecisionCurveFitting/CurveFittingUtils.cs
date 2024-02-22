@@ -90,11 +90,11 @@ namespace MultiPrecisionCurveFitting {
         }
 
         public static MultiPrecision<N> MaxRelativeError<N>(Vector<N> expected, Vector<N> actual) where N : struct, IConstant {
-            return Vector<N>.Func(expected, actual, RelativeError).Select(item => item.val).Max();
+            return Vector<N>.Func(RelativeError, expected, actual).Select(item => item.val).Max();
         }
 
         public static MultiPrecision<N> MaxAbsoluteError<N>(Vector<N> expected, Vector<N> actual) where N : struct, IConstant {
-            return Vector<N>.Func(expected, actual, AbsoluteError).Select(item => item.val).Max();
+            return Vector<N>.Func(AbsoluteError, expected, actual).Select(item => item.val).Max();
         }
 
         public static IEnumerable<(MultiPrecision<N> numer, MultiPrecision<N> denom)> EnumeratePadeCoef<N>(Vector<N> param, int m, int n) where N : struct, IConstant {

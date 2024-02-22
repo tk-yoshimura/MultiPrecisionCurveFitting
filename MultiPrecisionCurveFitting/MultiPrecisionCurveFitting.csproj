@@ -9,8 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="TYoshimura.MultiPrecision" Version="6.3.0" />
-    <PackageReference Include="TYoshimura.MultiPrecision.Algebra" Version="1.4.0" />
+    <PackageReference Include="TYoshimura.MultiPrecision" Version="6.3.2" />
+    <PackageReference Include="TYoshimura.MultiPrecision.Algebra" Version="1.4.2" />
   </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

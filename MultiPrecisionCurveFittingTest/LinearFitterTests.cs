@@ -7,7 +7,7 @@ namespace MultiPrecisionCurveFitting.Tests {
     public class LinearFitterTests {
         [TestMethod()]
         public void ExecuteFittingTest() {
-            MultiPrecision<Pow2.N8>[] xs = { 2, 3 }, ys = { 1, 8 };
+            MultiPrecision<Pow2.N8>[] xs = [2, 3], ys = [1, 8];
 
             LinearFitter<Pow2.N8> fitter1 = new(xs, ys);
             LinearFitter<Pow2.N8> fitter2 = new(xs, ys, intercept: 0);
@@ -23,7 +23,7 @@ namespace MultiPrecisionCurveFitting.Tests {
 
         [TestMethod()]
         public void ExecuteWeightedFittingTest() {
-            MultiPrecision<Pow2.N8>[] xs = { 2, 3, 4 }, ys = { 1, 8, 1e+8 }, ws = { 0.5, 0.5, 0 };
+            MultiPrecision<Pow2.N8>[] xs = [2, 3, 4], ys = [1, 8, 1e+8], ws = [0.5, 0.5, 0];
 
             LinearFitter<Pow2.N8> fitter1 = new(xs, ys);
             LinearFitter<Pow2.N8> fitter2 = new(xs, ys, intercept: 0);

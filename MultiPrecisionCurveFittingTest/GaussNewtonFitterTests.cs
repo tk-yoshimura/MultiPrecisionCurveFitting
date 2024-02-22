@@ -22,8 +22,8 @@ namespace MultiPrecisionCurveFitting.Tests {
             }
 
             Vector<Pow2.N8> p = new(2, 3);
-            MultiPrecision<Pow2.N8>[] xs = { 1, 3, 4, 7 };
-            MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(xs, x => fitting_func(x, p));
+            MultiPrecision<Pow2.N8>[] xs = [1, 3, 4, 7];
+            MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(x => fitting_func(x, p), xs);
 
             GaussNewtonFitter<Pow2.N8> fitter = new(xs, ys, new FittingFunction<Pow2.N8>(2, fitting_func, fitting_diff_func));
 
@@ -49,11 +49,11 @@ namespace MultiPrecisionCurveFitting.Tests {
             }
 
             Vector<Pow2.N8> p = new(2, 3);
-            MultiPrecision<Pow2.N8>[] xs = { 1, 3, 4, 7, 8 };
-            MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(xs, x => fitting_func(x, p));
+            MultiPrecision<Pow2.N8>[] xs = [1, 3, 4, 7, 8];
+            MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(x => fitting_func(x, p), xs);
             ys[2] = 1e+8;
 
-            MultiPrecision<Pow2.N8>[] ws = { 0.5, 0.75, 0, 0.75, 0.5 };
+            MultiPrecision<Pow2.N8>[] ws = [0.5, 0.75, 0, 0.75, 0.5];
 
             GaussNewtonFitter<Pow2.N8> fitter = new(xs, ys, new FittingFunction<Pow2.N8>(2, fitting_func, fitting_diff_func));
 
