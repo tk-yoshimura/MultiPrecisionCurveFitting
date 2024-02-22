@@ -16,7 +16,7 @@ AVX2 suppoted CPU. (Intel:Haswell(2013)-, AMD:Excavator(2015)-)
 
 ```csharp
 MultiPrecision<Pow2.N8>[] xs = Vector<Pow2.N8>.Arange(1024) / 1024;
-MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(xs, x => MultiPrecision<Pow2.N8>.Cos(x) - 0.25);
+MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(x => MultiPrecision<Pow2.N8>.Cos(x) - 0.25, xs);
 
 PadeFitter<Pow2.N8> fitter = new(xs, ys, intercept: 0.75, numer: 4, denom: 3);
 
