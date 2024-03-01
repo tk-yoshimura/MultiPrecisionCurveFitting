@@ -119,5 +119,20 @@ namespace MultiPrecisionCurveFitting {
                 }
             }
         }
+
+        public static (long exp_scale, Vector<N> v_standardized) StandardizeExponent<N>(Vector<N> v) where N : struct, IConstant {
+            if (v.Dim <= 0 || v.All(v => MultiPrecision<N>.IsZero(v.val))) {
+                throw new ArgumentException("invalid vector because it zero vector", nameof(v));
+            }
+
+            if (v.Any(v => !MultiPrecision<N>.IsFinite(v.val))) {
+                throw new ArgumentException("invalid vector because it contains infinite values", nameof(v));
+            }
+
+            long exp_scale = v.Max(v => v.val.Exponent);
+            Vector<N> v_standardized = (x => MultiPrecision<N>.Ldexp(x, -exp_scale), v);
+
+            return (exp_scale, v_standardized);
+        }
     }
 }
