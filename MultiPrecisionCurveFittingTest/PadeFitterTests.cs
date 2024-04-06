@@ -231,7 +231,7 @@ namespace MultiPrecisionCurveFitting.Tests {
 
             (Matrix<Pow2.N4> m, Vector<Pow2.N4> v) = PadeFitter<Pow2.N4>.GenerateTable(table, 5, 4);
 
-            Assert.AreEqual(m, m.Transpose);
+            Assert.AreEqual(m, m.T);
 
             Assert.AreEqual(s(0, 0), m[0, 0]);
             Assert.AreEqual(s(1, 0), m[1, 0]);
