@@ -6,7 +6,7 @@ namespace MultiPrecisionCurveFitting.Tests {
     [TestClass()]
     public class PolynomialFitterTests {
         [TestMethod()]
-        public void ExecuteFittingTest() {
+        public void FitTest() {
             Vector<Pow2.N8> p1 = new(2, -1, 1, 5), p2 = new(1, 4, 3, -1);
             MultiPrecision<Pow2.N8>[] xs = [1, 3, 4, 7, 8, 9, 13, 15, 20];
             MultiPrecision<Pow2.N8>[] ys1 = Vector<Pow2.N8>.Polynomial(xs, p1), ys2 = Vector<Pow2.N8>.Polynomial(xs, p2);
@@ -14,11 +14,11 @@ namespace MultiPrecisionCurveFitting.Tests {
             PolynomialFitter<Pow2.N8> fitter1 = new(xs, ys1, 3);
             PolynomialFitter<Pow2.N8> fitter2 = new(xs, ys2, 3, intercept: 1);
 
-            Assert.IsTrue((fitter1.ExecuteFitting() - p1).Norm < 1e-48);
-            Assert.IsTrue((fitter2.ExecuteFitting() - p2).Norm < 1e-48);
+            Assert.IsTrue((fitter1.Fit() - p1).Norm < 1e-48);
+            Assert.IsTrue((fitter2.Fit() - p2).Norm < 1e-48);
 
-            Assert.IsTrue(fitter1.Error(fitter1.ExecuteFitting()).Norm < 1e-48);
-            Assert.IsTrue(fitter2.Error(fitter2.ExecuteFitting()).Norm < 1e-48);
+            Assert.IsTrue(fitter1.Error(fitter1.Fit()).Norm < 1e-48);
+            Assert.IsTrue(fitter2.Error(fitter2.Fit()).Norm < 1e-48);
         }
 
         [TestMethod()]
@@ -33,8 +33,8 @@ namespace MultiPrecisionCurveFitting.Tests {
             PolynomialFitter<Pow2.N8> fitter1 = new(xs, ys1, 3);
             PolynomialFitter<Pow2.N8> fitter2 = new(xs, ys2, 3, intercept: 1);
 
-            Assert.IsTrue((fitter1.ExecuteFitting(ws) - p1).Norm < 1e-48);
-            Assert.IsTrue((fitter2.ExecuteFitting(ws) - p2).Norm < 1e-48);
+            Assert.IsTrue((fitter1.Fit(ws) - p1).Norm < 1e-48);
+            Assert.IsTrue((fitter2.Fit(ws) - p2).Norm < 1e-48);
         }
     }
 }

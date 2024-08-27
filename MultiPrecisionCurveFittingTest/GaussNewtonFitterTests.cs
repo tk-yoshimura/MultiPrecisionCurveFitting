@@ -6,7 +6,7 @@ namespace MultiPrecisionCurveFitting.Tests {
     [TestClass()]
     public class GaussNewtonFitterTests {
         [TestMethod()]
-        public void ExecuteFittingTest() {
+        public void FitTest() {
             static MultiPrecision<Pow2.N8> fitting_func(MultiPrecision<Pow2.N8> x, Vector<Pow2.N8> parameter) {
                 MultiPrecision<Pow2.N8> a = parameter[0], b = parameter[1];
 
@@ -27,7 +27,7 @@ namespace MultiPrecisionCurveFitting.Tests {
 
             GaussNewtonFitter<Pow2.N8> fitter = new(xs, ys, new FittingFunction<Pow2.N8>(2, fitting_func, fitting_diff_func));
 
-            var v = fitter.ExecuteFitting(new Vector<Pow2.N8>(3, 4), iter: 256);
+            var v = fitter.Fit(new Vector<Pow2.N8>(3, 4), iter: 256);
 
             Assert.IsTrue((v - p).Norm < 1e-40);
         }
@@ -57,7 +57,7 @@ namespace MultiPrecisionCurveFitting.Tests {
 
             GaussNewtonFitter<Pow2.N8> fitter = new(xs, ys, new FittingFunction<Pow2.N8>(2, fitting_func, fitting_diff_func));
 
-            var v = fitter.ExecuteFitting(new Vector<Pow2.N8>(3, 4), iter: 256, weights: ws);
+            var v = fitter.Fit(new Vector<Pow2.N8>(3, 4), iter: 256, weights: ws);
 
             Assert.IsTrue((v - p).Norm < 1e-40);
         }

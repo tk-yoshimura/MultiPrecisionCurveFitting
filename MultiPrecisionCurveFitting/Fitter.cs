@@ -50,20 +50,20 @@ namespace MultiPrecisionCurveFitting {
                 throw new ArgumentException("invalid size", nameof(parameters));
             }
 
-            Vector<N> errors = FittingValue(X, parameters) - Y;
+            Vector<N> errors = Regress(X, parameters) - Y;
 
             return errors;
         }
 
         /// <summary>フィッティング値</summary>
-        public abstract MultiPrecision<N> FittingValue(MultiPrecision<N> x, Vector<N> parameters);
+        public abstract MultiPrecision<N> Regress(MultiPrecision<N> x, Vector<N> parameters);
 
         /// <summary>フィッティング値</summary>
-        public Vector<N> FittingValue(Vector<N> xs, Vector<N> parameters) {
+        public Vector<N> Regress(Vector<N> xs, Vector<N> parameters) {
             MultiPrecision<N>[] ys = new MultiPrecision<N>[xs.Dim];
 
             for (int i = 0; i < xs.Dim; i++) {
-                ys[i] = FittingValue(xs[i], parameters);
+                ys[i] = Regress(xs[i], parameters);
             }
 
             return ys;

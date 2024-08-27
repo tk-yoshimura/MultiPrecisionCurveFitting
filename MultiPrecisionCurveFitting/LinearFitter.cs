@@ -18,7 +18,7 @@ namespace MultiPrecisionCurveFitting {
         }
 
         /// <summary>フィッティング値</summary>
-        public override MultiPrecision<N> FittingValue(MultiPrecision<N> x, Vector<N> parameters) {
+        public override MultiPrecision<N> Regress(MultiPrecision<N> x, Vector<N> parameters) {
             if (parameters.Dim != Parameters) {
                 throw new ArgumentException("invalid size", nameof(parameters));
             }
@@ -27,7 +27,7 @@ namespace MultiPrecisionCurveFitting {
         }
 
         /// <summary>フィッティング</summary>
-        public Vector<N> ExecuteFitting(Vector<N>? weights = null) {
+        public Vector<N> Fit(Vector<N>? weights = null) {
             sum_table.W = weights;
 
             MultiPrecision<N> sum_wxx = sum_table[2, 0], sum_wxy = sum_table[1, 1];

@@ -30,7 +30,20 @@ namespace MultiPrecisionCurveFitting {
             this.Denom = denom;
         }
 
-        public override MultiPrecision<N> FittingValue(MultiPrecision<N> x, Vector<N> parameters) {
+        public PadeFitter(SumTable<N> sum_table, int numer, int denom, MultiPrecision<N>? intercept = null)
+            : base(sum_table.X, sum_table.Y,
+                  parameters:
+                  (numer >= 2 && denom >= 2)
+                      ? (numer + denom)
+                      : throw new ArgumentOutOfRangeException($"{nameof(numer)},{nameof(denom)}")) {
+
+            this.sum_table = sum_table;
+            this.intercept = intercept;
+            this.Numer = numer;
+            this.Denom = denom;
+        }
+
+        public override MultiPrecision<N> Regress(MultiPrecision<N> x, Vector<N> parameters) {
             if (parameters.Dim != Parameters) {
                 throw new ArgumentException("invalid size", nameof(parameters));
             }
@@ -50,7 +63,7 @@ namespace MultiPrecisionCurveFitting {
         }
 
         /// <summary>フィッティング</summary>
-        public Vector<N> ExecuteFitting(Vector<N>? weights = null, MultiPrecision<N>? norm_cost = null) {
+        public Vector<N> Fit(Vector<N>? weights = null, MultiPrecision<N>? norm_cost = null) {
             sum_table.W = weights;
             (Matrix<N> m, Vector<N> v) = GenerateTable(sum_table, Numer, Denom);
 

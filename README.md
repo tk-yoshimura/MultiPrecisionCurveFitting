@@ -20,16 +20,16 @@ MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(x => MultiPrecision<Pow2.N8>
 
 PadeFitter<Pow2.N8> fitter = new(xs, ys, intercept: 0.75, numer: 4, denom: 3);
 
-Vector<Pow2.N8> parameters = fitter.ExecuteFitting();
+Vector<Pow2.N8> parameters = fitter.Fit();
 
 Console.WriteLine($"Numer : {parameters[..fitter.Numer]}");
 Console.WriteLine($"Denom : {parameters[fitter.Numer..]}");
 
-Assert.AreEqual(0.75, fitter.FittingValue(0, parameters));
+Assert.AreEqual(0.75, fitter.Regress(0, parameters));
 
 for (int i = 0; i < xs.Length; i++) {
-    Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.FittingValue(xs[i], parameters)) < 1e-5,
-        $"\nexpected : {ys[i]}\n actual  : {fitter.FittingValue(xs[i], parameters)}"
+    Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.Regress(xs[i], parameters)) < 1e-5,
+        $"\nexpected : {ys[i]}\n actual  : {fitter.Regress(xs[i], parameters)}"
     );
 }
 ```

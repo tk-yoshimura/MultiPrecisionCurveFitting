@@ -6,22 +6,22 @@ namespace MultiPrecisionCurveFitting.Tests {
     [TestClass()]
     public class PadeFitterTests {
         [TestMethod()]
-        public void ExecuteFittingWithInterceptTest() {
+        public void FitWithInterceptTest() {
             MultiPrecision<Pow2.N8>[] xs = Vector<Pow2.N8>.Arange(1024) / 1024;
             MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(x => MultiPrecision<Pow2.N8>.Cos(x) - 0.25, xs);
 
             PadeFitter<Pow2.N8> fitter = new(xs, ys, intercept: 0.75, numer: 4, denom: 3);
 
-            Vector<Pow2.N8> parameters = fitter.ExecuteFitting();
+            Vector<Pow2.N8> parameters = fitter.Fit();
 
             Console.WriteLine($"Numer : {parameters[..fitter.Numer]}");
             Console.WriteLine($"Denom : {parameters[fitter.Numer..]}");
 
-            Assert.AreEqual(0.75, fitter.FittingValue(0, parameters));
+            Assert.AreEqual(0.75, fitter.Regress(0, parameters));
 
             for (int i = 0; i < xs.Length; i++) {
-                Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.FittingValue(xs[i], parameters)) < 1e-5,
-                    $"\nexpected : {ys[i]}\n actual  : {fitter.FittingValue(xs[i], parameters)}"
+                Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.Regress(xs[i], parameters)) < 1e-5,
+                    $"\nexpected : {ys[i]}\n actual  : {fitter.Regress(xs[i], parameters)}"
                 );
             }
 
@@ -29,20 +29,20 @@ namespace MultiPrecisionCurveFitting.Tests {
         }
 
         [TestMethod()]
-        public void ExecuteFittingWithoutInterceptTest() {
+        public void FitWithoutInterceptTest() {
             MultiPrecision<Pow2.N8>[] xs = Vector<Pow2.N8>.Arange(1024) / 1024;
             MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(x => MultiPrecision<Pow2.N8>.Cos(x) - 0.25, xs);
 
             PadeFitter<Pow2.N8> fitter = new(xs, ys, numer: 4, denom: 3);
 
-            Vector<Pow2.N8> parameters = fitter.ExecuteFitting();
+            Vector<Pow2.N8> parameters = fitter.Fit();
 
             Console.WriteLine($"Numer : {parameters[..fitter.Numer]}");
             Console.WriteLine($"Denom : {parameters[fitter.Numer..]}");
 
             for (int i = 0; i < xs.Length; i++) {
-                Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.FittingValue(xs[i], parameters)) < 1e-5,
-                    $"\nexpected : {ys[i]}\n actual  : {fitter.FittingValue(xs[i], parameters)}"
+                Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.Regress(xs[i], parameters)) < 1e-5,
+                    $"\nexpected : {ys[i]}\n actual  : {fitter.Regress(xs[i], parameters)}"
                 );
             }
 
@@ -60,20 +60,20 @@ namespace MultiPrecisionCurveFitting.Tests {
 
             PadeFitter<Pow2.N8> fitter = new(xs, ys, intercept: 0.75, numer: 4, denom: 3);
 
-            Vector<Pow2.N8> parameters = fitter.ExecuteFitting(ws);
+            Vector<Pow2.N8> parameters = fitter.Fit(ws);
 
             Console.WriteLine($"Numer : {parameters[..fitter.Numer]}");
             Console.WriteLine($"Denom : {parameters[fitter.Numer..]}");
 
-            Assert.AreEqual(0.75, fitter.FittingValue(0, parameters));
+            Assert.AreEqual(0.75, fitter.Regress(0, parameters));
 
             for (int i = 0; i < xs.Length; i++) {
                 if (i == 256) {
                     continue;
                 }
 
-                Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.FittingValue(xs[i], parameters)) < 1e-5,
-                    $"\nexpected : {ys[i]}\n actual  : {fitter.FittingValue(xs[i], parameters)}"
+                Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.Regress(xs[i], parameters)) < 1e-5,
+                    $"\nexpected : {ys[i]}\n actual  : {fitter.Regress(xs[i], parameters)}"
                 );
             }
         }
@@ -89,7 +89,7 @@ namespace MultiPrecisionCurveFitting.Tests {
 
             PadeFitter<Pow2.N8> fitter = new(xs, ys, numer: 4, denom: 3);
 
-            Vector<Pow2.N8> parameters = fitter.ExecuteFitting(ws);
+            Vector<Pow2.N8> parameters = fitter.Fit(ws);
 
             Console.WriteLine($"Numer : {parameters[..fitter.Numer]}");
             Console.WriteLine($"Denom : {parameters[fitter.Numer..]}");
@@ -99,56 +99,56 @@ namespace MultiPrecisionCurveFitting.Tests {
                     continue;
                 }
 
-                Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.FittingValue(xs[i], parameters)) < 1e-5,
-                    $"\nexpected : {ys[i]}\n actual  : {fitter.FittingValue(xs[i], parameters)}"
+                Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.Regress(xs[i], parameters)) < 1e-5,
+                    $"\nexpected : {ys[i]}\n actual  : {fitter.Regress(xs[i], parameters)}"
                 );
             }
         }
 
         [TestMethod()]
-        public void ExecuteFittingWithInterceptWithCostTest() {
+        public void FitWithInterceptWithCostTest() {
             MultiPrecision<Pow2.N8>[] xs = Vector<Pow2.N8>.Arange(1024) / 1024;
             MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(x => MultiPrecision<Pow2.N8>.Cos(x) - 0.25, xs);
 
             PadeFitter<Pow2.N8> fitter = new(xs, ys, intercept: 0.75, numer: 4, denom: 3);
 
-            Assert.IsTrue(fitter.ExecuteFitting().Norm > fitter.ExecuteFitting(norm_cost: 1e-8).Norm);
-            Assert.IsTrue(fitter.ExecuteFitting(norm_cost: 1e-8).Norm > fitter.ExecuteFitting(norm_cost: 1e-4).Norm);
-            Assert.IsTrue(fitter.ExecuteFitting(norm_cost: 1e-4).Norm > fitter.ExecuteFitting(norm_cost: 1e-2).Norm);
+            Assert.IsTrue(fitter.Fit().Norm > fitter.Fit(norm_cost: 1e-8).Norm);
+            Assert.IsTrue(fitter.Fit(norm_cost: 1e-8).Norm > fitter.Fit(norm_cost: 1e-4).Norm);
+            Assert.IsTrue(fitter.Fit(norm_cost: 1e-4).Norm > fitter.Fit(norm_cost: 1e-2).Norm);
 
-            Vector<Pow2.N8> parameters = fitter.ExecuteFitting(norm_cost: 1e-8);
+            Vector<Pow2.N8> parameters = fitter.Fit(norm_cost: 1e-8);
 
             Console.WriteLine($"Numer : {parameters[..fitter.Numer]}");
             Console.WriteLine($"Denom : {parameters[fitter.Numer..]}");
 
-            Assert.AreEqual(0.75, fitter.FittingValue(0, parameters));
+            Assert.AreEqual(0.75, fitter.Regress(0, parameters));
 
             for (int i = 0; i < xs.Length; i++) {
-                Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.FittingValue(xs[i], parameters)) < 1e-4,
-                    $"\nexpected : {ys[i]}\n actual  : {fitter.FittingValue(xs[i], parameters)}"
+                Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.Regress(xs[i], parameters)) < 1e-4,
+                    $"\nexpected : {ys[i]}\n actual  : {fitter.Regress(xs[i], parameters)}"
                 );
             }
         }
 
         [TestMethod()]
-        public void ExecuteFittingWithoutInterceptWithCostTest() {
+        public void FitWithoutInterceptWithCostTest() {
             MultiPrecision<Pow2.N8>[] xs = Vector<Pow2.N8>.Arange(1024) / 1024;
             MultiPrecision<Pow2.N8>[] ys = Vector<Pow2.N8>.Func(x => MultiPrecision<Pow2.N8>.Cos(x) - 0.25, xs);
 
             PadeFitter<Pow2.N8> fitter = new(xs, ys, numer: 4, denom: 3);
 
-            Assert.IsTrue(fitter.ExecuteFitting().Norm > fitter.ExecuteFitting(norm_cost: 1e-8).Norm);
-            Assert.IsTrue(fitter.ExecuteFitting(norm_cost: 1e-8).Norm > fitter.ExecuteFitting(norm_cost: 1e-4).Norm);
-            Assert.IsTrue(fitter.ExecuteFitting(norm_cost: 1e-4).Norm > fitter.ExecuteFitting(norm_cost: 1e-2).Norm);
+            Assert.IsTrue(fitter.Fit().Norm > fitter.Fit(norm_cost: 1e-8).Norm);
+            Assert.IsTrue(fitter.Fit(norm_cost: 1e-8).Norm > fitter.Fit(norm_cost: 1e-4).Norm);
+            Assert.IsTrue(fitter.Fit(norm_cost: 1e-4).Norm > fitter.Fit(norm_cost: 1e-2).Norm);
 
-            Vector<Pow2.N8> parameters = fitter.ExecuteFitting(norm_cost: 1e-8);
+            Vector<Pow2.N8> parameters = fitter.Fit(norm_cost: 1e-8);
 
             Console.WriteLine($"Numer : {parameters[..fitter.Numer]}");
             Console.WriteLine($"Denom : {parameters[fitter.Numer..]}");
 
             for (int i = 0; i < xs.Length; i++) {
-                Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.FittingValue(xs[i], parameters)) < 1e-4,
-                    $"\nexpected : {ys[i]}\n actual  : {fitter.FittingValue(xs[i], parameters)}"
+                Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.Regress(xs[i], parameters)) < 1e-4,
+                    $"\nexpected : {ys[i]}\n actual  : {fitter.Regress(xs[i], parameters)}"
                 );
             }
         }
@@ -164,24 +164,24 @@ namespace MultiPrecisionCurveFitting.Tests {
 
             PadeFitter<Pow2.N8> fitter = new(xs, ys, intercept: 0.75, numer: 4, denom: 3);
 
-            Assert.IsTrue(fitter.ExecuteFitting(ws).Norm > fitter.ExecuteFitting(ws, norm_cost: 1e-8).Norm);
-            Assert.IsTrue(fitter.ExecuteFitting(ws, norm_cost: 1e-8).Norm > fitter.ExecuteFitting(ws, norm_cost: 1e-4).Norm);
-            Assert.IsTrue(fitter.ExecuteFitting(ws, norm_cost: 1e-4).Norm > fitter.ExecuteFitting(ws, norm_cost: 1e-2).Norm);
+            Assert.IsTrue(fitter.Fit(ws).Norm > fitter.Fit(ws, norm_cost: 1e-8).Norm);
+            Assert.IsTrue(fitter.Fit(ws, norm_cost: 1e-8).Norm > fitter.Fit(ws, norm_cost: 1e-4).Norm);
+            Assert.IsTrue(fitter.Fit(ws, norm_cost: 1e-4).Norm > fitter.Fit(ws, norm_cost: 1e-2).Norm);
 
-            Vector<Pow2.N8> parameters = fitter.ExecuteFitting(ws, norm_cost: 1e-8);
+            Vector<Pow2.N8> parameters = fitter.Fit(ws, norm_cost: 1e-8);
 
             Console.WriteLine($"Numer : {parameters[..fitter.Numer]}");
             Console.WriteLine($"Denom : {parameters[fitter.Numer..]}");
 
-            Assert.AreEqual(0.75, fitter.FittingValue(0, parameters));
+            Assert.AreEqual(0.75, fitter.Regress(0, parameters));
 
             for (int i = 0; i < xs.Length; i++) {
                 if (i == 256) {
                     continue;
                 }
 
-                Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.FittingValue(xs[i], parameters)) < 1e-4,
-                    $"\nexpected : {ys[i]}\n actual  : {fitter.FittingValue(xs[i], parameters)}"
+                Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.Regress(xs[i], parameters)) < 1e-4,
+                    $"\nexpected : {ys[i]}\n actual  : {fitter.Regress(xs[i], parameters)}"
                 );
             }
         }
@@ -197,11 +197,11 @@ namespace MultiPrecisionCurveFitting.Tests {
 
             PadeFitter<Pow2.N8> fitter = new(xs, ys, numer: 4, denom: 3);
 
-            Assert.IsTrue(fitter.ExecuteFitting(ws).Norm > fitter.ExecuteFitting(ws, norm_cost: 1e-8).Norm);
-            Assert.IsTrue(fitter.ExecuteFitting(ws, norm_cost: 1e-8).Norm > fitter.ExecuteFitting(ws, norm_cost: 1e-4).Norm);
-            Assert.IsTrue(fitter.ExecuteFitting(ws, norm_cost: 1e-4).Norm > fitter.ExecuteFitting(ws, norm_cost: 1e-2).Norm);
+            Assert.IsTrue(fitter.Fit(ws).Norm > fitter.Fit(ws, norm_cost: 1e-8).Norm);
+            Assert.IsTrue(fitter.Fit(ws, norm_cost: 1e-8).Norm > fitter.Fit(ws, norm_cost: 1e-4).Norm);
+            Assert.IsTrue(fitter.Fit(ws, norm_cost: 1e-4).Norm > fitter.Fit(ws, norm_cost: 1e-2).Norm);
 
-            Vector<Pow2.N8> parameters = fitter.ExecuteFitting(ws, norm_cost: 1e-8);
+            Vector<Pow2.N8> parameters = fitter.Fit(ws, norm_cost: 1e-8);
 
             Console.WriteLine($"Numer : {parameters[..fitter.Numer]}");
             Console.WriteLine($"Denom : {parameters[fitter.Numer..]}");
@@ -211,8 +211,8 @@ namespace MultiPrecisionCurveFitting.Tests {
                     continue;
                 }
 
-                Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.FittingValue(xs[i], parameters)) < 1e-4,
-                    $"\nexpected : {ys[i]}\n actual  : {fitter.FittingValue(xs[i], parameters)}"
+                Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.Regress(xs[i], parameters)) < 1e-4,
+                    $"\nexpected : {ys[i]}\n actual  : {fitter.Regress(xs[i], parameters)}"
                 );
             }
         }

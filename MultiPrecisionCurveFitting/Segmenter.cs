@@ -1,7 +1,7 @@
 ﻿using MultiPrecision;
 
 namespace MultiPrecisionCurveFitting {
-    public class Segmenter<N> where N: struct, IConstant {
+    public class Segmenter<N> where N : struct, IConstant {
         private readonly List<(MultiPrecision<N> min, MultiPrecision<N> max, bool is_success)> approximated_ranges = [];
         private readonly List<(MultiPrecision<N> min, MultiPrecision<N> max, MultiPrecision<N> range_limit)> uncompleted_ranges;
 
@@ -30,7 +30,7 @@ namespace MultiPrecisionCurveFitting {
                     continue;
                 }
 
-                if (approximation_func(min, max)) { 
+                if (approximation_func(min, max)) {
                     approximated_ranges.Add((min, max, is_success: true));
                     continue;
                 }

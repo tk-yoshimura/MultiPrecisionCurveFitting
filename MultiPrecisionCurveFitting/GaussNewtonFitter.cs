@@ -14,12 +14,12 @@ namespace MultiPrecisionCurveFitting {
         }
 
         /// <summary>フィッティング値</summary>
-        public override MultiPrecision<N> FittingValue(MultiPrecision<N> x, Vector<N> parameters) {
+        public override MultiPrecision<N> Regress(MultiPrecision<N> x, Vector<N> parameters) {
             return func.F(x, parameters);
         }
 
         /// <summary>フィッティング</summary>
-        public Vector<N> ExecuteFitting(Vector<N> parameters, double lambda = 0.75, int iter = 256, Vector<N>? weights = null, Func<Vector<N>, bool>? iter_callback = null) {
+        public Vector<N> Fit(Vector<N> parameters, double lambda = 0.75, int iter = 256, Vector<N>? weights = null, Func<Vector<N>, bool>? iter_callback = null) {
             Vector<N> errors, dparam;
             Matrix<N> jacobian;
 

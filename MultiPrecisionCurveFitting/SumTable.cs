@@ -8,6 +8,9 @@ namespace MultiPrecisionCurveFitting {
 
         private Vector<N>? w = null;
 
+        internal Vector<N> X { get; }
+        internal Vector<N> Y { get; }
+
         public SumTable(Vector<N> x, Vector<N> y) {
             if (x.Dim != y.Dim) {
                 throw new ArgumentException("invalid size", $"{nameof(x)},{nameof(y)}");
@@ -18,6 +21,9 @@ namespace MultiPrecisionCurveFitting {
             this.table = new() {
                 { (0, 0), x.Dim },
             };
+
+            this.X = x;
+            this.Y = y;
         }
 
         public MultiPrecision<N> this[int xn, int yn] {
