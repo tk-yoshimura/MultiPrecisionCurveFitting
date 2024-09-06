@@ -40,12 +40,12 @@ namespace MultiPrecisionCurveFitting {
             (Matrix<N> m, Vector<N> v) = GenerateTable(sum_table, Degree, enable_intercept: intercept is null);
 
             if (intercept is null) {
-                Vector<N> parameters = Matrix<N>.Solve(m, v);
+                Vector<N> parameters = Matrix<N>.SolvePositiveSymmetric(m, v, enable_check_symmetric: false);
 
                 return parameters;
             }
             else {
-                Vector<N> parameters = Vector<N>.Concat(intercept, Matrix<N>.Solve(m, v));
+                Vector<N> parameters = Vector<N>.Concat(intercept, Matrix<N>.SolvePositiveSymmetric(m, v, enable_check_symmetric: false));
 
                 return parameters;
             }

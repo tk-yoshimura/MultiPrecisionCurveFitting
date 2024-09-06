@@ -17,7 +17,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="TYoshimura.MultiPrecision" Version="6.3.4" />
-    <PackageReference Include="TYoshimura.MultiPrecision.Algebra" Version="2.1.7" />
+    <PackageReference Include="TYoshimura.MultiPrecision.Algebra" Version="2.2.2" />
   </ItemGroup>
 
   <ItemGroup>

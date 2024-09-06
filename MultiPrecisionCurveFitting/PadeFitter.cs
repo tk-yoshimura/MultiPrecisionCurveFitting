@@ -76,7 +76,7 @@ namespace MultiPrecisionCurveFitting {
             }
 
             if (intercept is null) {
-                Vector<N> x = Matrix<N>.Solve(m, v);
+                Vector<N> x = Matrix<N>.SolvePositiveSymmetric(m, v, enable_check_symmetric: false);
 
                 Vector<N> parameters = Vector<N>.Concat(x[..Numer], 1, x[Numer..]);
 
@@ -86,7 +86,7 @@ namespace MultiPrecisionCurveFitting {
                 v = v[1..] - intercept * m[0, 1..];
                 m = m[1.., 1..];
 
-                Vector<N> x = Matrix<N>.Solve(m, v);
+                Vector<N> x = Matrix<N>.SolvePositiveSymmetric(m, v, enable_check_symmetric: false);
 
                 Vector<N> parameters = Vector<N>.Concat(intercept, x[..(Numer - 1)], 1, x[(Numer - 1)..]);
 
