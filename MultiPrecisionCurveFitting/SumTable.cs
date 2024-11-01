@@ -3,7 +3,7 @@ using MultiPrecisionAlgebra;
 
 namespace MultiPrecisionCurveFitting {
     public class SumTable<N> where N : struct, IConstant {
-        private readonly List<Vector<N>> xs = new(), ys = new();
+        private readonly List<Vector<N>> xs = [], ys = [];
         private Dictionary<(int xn, int yn), MultiPrecision<N>> table;
 
         private Vector<N>? w = null;
