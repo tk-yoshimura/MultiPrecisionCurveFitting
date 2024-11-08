@@ -16,7 +16,7 @@ namespace MultiPrecisionCurveFitting.Tests {
                         Console.WriteLine($"{m},{n}");
 
                         Assert.AreEqual(coef_counts, m + n);
-                        Assert.IsTrue(Math.Abs(m - n) <= degree_delta);
+                        Assert.IsTrue(int.Abs(m - n) <= degree_delta);
                         Assert.IsTrue(m > 1);
                         Assert.IsTrue(n > 1);
                     }
