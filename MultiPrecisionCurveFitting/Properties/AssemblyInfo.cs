@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("MultiPrecisionCurveFitting")]
-[assembly: AssemblyCopyright("Copyright © T.Yoshimura 2023-2024")]
+[assembly: AssemblyCopyright("Copyright © T.Yoshimura 2023-2026")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -15,6 +15,6 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid("DF050371-6DFD-4187-92C6-3B46AF2D10EA")]
 
-[assembly: AssemblyVersion("1.9.1.*")]
+[assembly: AssemblyVersion("2.0.0.*")]
 
 [assembly: InternalsVisibleTo("MultiPrecisionCurveFittingTest")]

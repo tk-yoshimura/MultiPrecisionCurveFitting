@@ -20,12 +20,12 @@ namespace MultiPrecisionCurveFitting.Tests {
             Assert.AreEqual(0.75, fitter.Regress(0, parameters));
 
             for (int i = 0; i < xs.Length; i++) {
-                Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.Regress(xs[i], parameters)) < 1e-5,
-                    $"\nexpected : {ys[i]}\n actual  : {fitter.Regress(xs[i], parameters)}"
+                Assert.IsLessThan(1e-5,
+MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.Regress(xs[i], parameters)), $"\nexpected : {ys[i]}\n actual  : {fitter.Regress(xs[i], parameters)}"
                 );
             }
 
-            Assert.IsTrue(fitter.Error(parameters).Norm < 1e-4);
+            Assert.IsLessThan(1e-4, fitter.Error(parameters).Norm);
         }
 
         [TestMethod()]
@@ -41,12 +41,12 @@ namespace MultiPrecisionCurveFitting.Tests {
             Console.WriteLine($"Denom : {parameters[fitter.Numer..]}");
 
             for (int i = 0; i < xs.Length; i++) {
-                Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.Regress(xs[i], parameters)) < 1e-5,
-                    $"\nexpected : {ys[i]}\n actual  : {fitter.Regress(xs[i], parameters)}"
+                Assert.IsLessThan(1e-5,
+MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.Regress(xs[i], parameters)), $"\nexpected : {ys[i]}\n actual  : {fitter.Regress(xs[i], parameters)}"
                 );
             }
 
-            Assert.IsTrue(fitter.Error(parameters).Norm < 1e-4);
+            Assert.IsLessThan(1e-4, fitter.Error(parameters).Norm);
         }
 
         [TestMethod()]
@@ -72,8 +72,8 @@ namespace MultiPrecisionCurveFitting.Tests {
                     continue;
                 }
 
-                Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.Regress(xs[i], parameters)) < 1e-5,
-                    $"\nexpected : {ys[i]}\n actual  : {fitter.Regress(xs[i], parameters)}"
+                Assert.IsLessThan(1e-5,
+MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.Regress(xs[i], parameters)), $"\nexpected : {ys[i]}\n actual  : {fitter.Regress(xs[i], parameters)}"
                 );
             }
         }
@@ -99,8 +99,8 @@ namespace MultiPrecisionCurveFitting.Tests {
                     continue;
                 }
 
-                Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.Regress(xs[i], parameters)) < 1e-5,
-                    $"\nexpected : {ys[i]}\n actual  : {fitter.Regress(xs[i], parameters)}"
+                Assert.IsLessThan(1e-5,
+MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.Regress(xs[i], parameters)), $"\nexpected : {ys[i]}\n actual  : {fitter.Regress(xs[i], parameters)}"
                 );
             }
         }
@@ -112,9 +112,9 @@ namespace MultiPrecisionCurveFitting.Tests {
 
             PadeFitter<Pow2.N8> fitter = new(xs, ys, intercept: 0.75, numer: 4, denom: 3);
 
-            Assert.IsTrue(fitter.Fit().Norm > fitter.Fit(norm_cost: 1e-8).Norm);
-            Assert.IsTrue(fitter.Fit(norm_cost: 1e-8).Norm > fitter.Fit(norm_cost: 1e-4).Norm);
-            Assert.IsTrue(fitter.Fit(norm_cost: 1e-4).Norm > fitter.Fit(norm_cost: 1e-2).Norm);
+            Assert.IsGreaterThan(fitter.Fit(norm_cost: 1e-8).Norm, fitter.Fit().Norm);
+            Assert.IsGreaterThan(fitter.Fit(norm_cost: 1e-4).Norm, fitter.Fit(norm_cost: 1e-8).Norm);
+            Assert.IsGreaterThan(fitter.Fit(norm_cost: 1e-2).Norm, fitter.Fit(norm_cost: 1e-4).Norm);
 
             Vector<Pow2.N8> parameters = fitter.Fit(norm_cost: 1e-8);
 
@@ -124,8 +124,8 @@ namespace MultiPrecisionCurveFitting.Tests {
             Assert.AreEqual(0.75, fitter.Regress(0, parameters));
 
             for (int i = 0; i < xs.Length; i++) {
-                Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.Regress(xs[i], parameters)) < 1e-4,
-                    $"\nexpected : {ys[i]}\n actual  : {fitter.Regress(xs[i], parameters)}"
+                Assert.IsLessThan(1e-4,
+MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.Regress(xs[i], parameters)), $"\nexpected : {ys[i]}\n actual  : {fitter.Regress(xs[i], parameters)}"
                 );
             }
         }
@@ -137,9 +137,9 @@ namespace MultiPrecisionCurveFitting.Tests {
 
             PadeFitter<Pow2.N8> fitter = new(xs, ys, numer: 4, denom: 3);
 
-            Assert.IsTrue(fitter.Fit().Norm > fitter.Fit(norm_cost: 1e-8).Norm);
-            Assert.IsTrue(fitter.Fit(norm_cost: 1e-8).Norm > fitter.Fit(norm_cost: 1e-4).Norm);
-            Assert.IsTrue(fitter.Fit(norm_cost: 1e-4).Norm > fitter.Fit(norm_cost: 1e-2).Norm);
+            Assert.IsGreaterThan(fitter.Fit(norm_cost: 1e-8).Norm, fitter.Fit().Norm);
+            Assert.IsGreaterThan(fitter.Fit(norm_cost: 1e-4).Norm, fitter.Fit(norm_cost: 1e-8).Norm);
+            Assert.IsGreaterThan(fitter.Fit(norm_cost: 1e-2).Norm, fitter.Fit(norm_cost: 1e-4).Norm);
 
             Vector<Pow2.N8> parameters = fitter.Fit(norm_cost: 1e-8);
 
@@ -147,8 +147,8 @@ namespace MultiPrecisionCurveFitting.Tests {
             Console.WriteLine($"Denom : {parameters[fitter.Numer..]}");
 
             for (int i = 0; i < xs.Length; i++) {
-                Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.Regress(xs[i], parameters)) < 1e-4,
-                    $"\nexpected : {ys[i]}\n actual  : {fitter.Regress(xs[i], parameters)}"
+                Assert.IsLessThan(1e-4,
+MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.Regress(xs[i], parameters)), $"\nexpected : {ys[i]}\n actual  : {fitter.Regress(xs[i], parameters)}"
                 );
             }
         }
@@ -164,9 +164,9 @@ namespace MultiPrecisionCurveFitting.Tests {
 
             PadeFitter<Pow2.N8> fitter = new(xs, ys, intercept: 0.75, numer: 4, denom: 3);
 
-            Assert.IsTrue(fitter.Fit(ws).Norm > fitter.Fit(ws, norm_cost: 1e-8).Norm);
-            Assert.IsTrue(fitter.Fit(ws, norm_cost: 1e-8).Norm > fitter.Fit(ws, norm_cost: 1e-4).Norm);
-            Assert.IsTrue(fitter.Fit(ws, norm_cost: 1e-4).Norm > fitter.Fit(ws, norm_cost: 1e-2).Norm);
+            Assert.IsGreaterThan(fitter.Fit(ws, norm_cost: 1e-8).Norm, fitter.Fit(ws).Norm);
+            Assert.IsGreaterThan(fitter.Fit(ws, norm_cost: 1e-4).Norm, fitter.Fit(ws, norm_cost: 1e-8).Norm);
+            Assert.IsGreaterThan(fitter.Fit(ws, norm_cost: 1e-2).Norm, fitter.Fit(ws, norm_cost: 1e-4).Norm);
 
             Vector<Pow2.N8> parameters = fitter.Fit(ws, norm_cost: 1e-8);
 
@@ -180,8 +180,8 @@ namespace MultiPrecisionCurveFitting.Tests {
                     continue;
                 }
 
-                Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.Regress(xs[i], parameters)) < 1e-4,
-                    $"\nexpected : {ys[i]}\n actual  : {fitter.Regress(xs[i], parameters)}"
+                Assert.IsLessThan(1e-4,
+MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.Regress(xs[i], parameters)), $"\nexpected : {ys[i]}\n actual  : {fitter.Regress(xs[i], parameters)}"
                 );
             }
         }
@@ -197,9 +197,9 @@ namespace MultiPrecisionCurveFitting.Tests {
 
             PadeFitter<Pow2.N8> fitter = new(xs, ys, numer: 4, denom: 3);
 
-            Assert.IsTrue(fitter.Fit(ws).Norm > fitter.Fit(ws, norm_cost: 1e-8).Norm);
-            Assert.IsTrue(fitter.Fit(ws, norm_cost: 1e-8).Norm > fitter.Fit(ws, norm_cost: 1e-4).Norm);
-            Assert.IsTrue(fitter.Fit(ws, norm_cost: 1e-4).Norm > fitter.Fit(ws, norm_cost: 1e-2).Norm);
+            Assert.IsGreaterThan(fitter.Fit(ws, norm_cost: 1e-8).Norm, fitter.Fit(ws).Norm);
+            Assert.IsGreaterThan(fitter.Fit(ws, norm_cost: 1e-4).Norm, fitter.Fit(ws, norm_cost: 1e-8).Norm);
+            Assert.IsGreaterThan(fitter.Fit(ws, norm_cost: 1e-2).Norm, fitter.Fit(ws, norm_cost: 1e-4).Norm);
 
             Vector<Pow2.N8> parameters = fitter.Fit(ws, norm_cost: 1e-8);
 
@@ -211,8 +211,8 @@ namespace MultiPrecisionCurveFitting.Tests {
                     continue;
                 }
 
-                Assert.IsTrue(MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.Regress(xs[i], parameters)) < 1e-4,
-                    $"\nexpected : {ys[i]}\n actual  : {fitter.Regress(xs[i], parameters)}"
+                Assert.IsLessThan(1e-4,
+MultiPrecision<Pow2.N8>.Abs(ys[i] - fitter.Regress(xs[i], parameters)), $"\nexpected : {ys[i]}\n actual  : {fitter.Regress(xs[i], parameters)}"
                 );
             }
         }

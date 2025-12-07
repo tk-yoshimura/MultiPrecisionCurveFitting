@@ -29,7 +29,7 @@ namespace MultiPrecisionCurveFitting.Tests {
 
             var v = fitter.Fit(new Vector<Pow2.N8>(3, 4), iter: 256);
 
-            Assert.IsTrue((v - p).Norm < 1e-40);
+            Assert.IsLessThan(1e-40, (v - p).Norm);
         }
 
         [TestMethod()]
@@ -59,7 +59,7 @@ namespace MultiPrecisionCurveFitting.Tests {
 
             var v = fitter.Fit(new Vector<Pow2.N8>(3, 4), iter: 256, weights: ws);
 
-            Assert.IsTrue((v - p).Norm < 1e-40);
+            Assert.IsLessThan(1e-40, (v - p).Norm);
         }
     }
 }

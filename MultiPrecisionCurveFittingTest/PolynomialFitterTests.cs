@@ -14,11 +14,11 @@ namespace MultiPrecisionCurveFitting.Tests {
             PolynomialFitter<Pow2.N8> fitter1 = new(xs, ys1, 3);
             PolynomialFitter<Pow2.N8> fitter2 = new(xs, ys2, 3, intercept: 1);
 
-            Assert.IsTrue((fitter1.Fit() - p1).Norm < 1e-48);
-            Assert.IsTrue((fitter2.Fit() - p2).Norm < 1e-48);
+            Assert.IsLessThan(1e-48, (fitter1.Fit() - p1).Norm);
+            Assert.IsLessThan(1e-48, (fitter2.Fit() - p2).Norm);
 
-            Assert.IsTrue(fitter1.Error(fitter1.Fit()).Norm < 1e-48);
-            Assert.IsTrue(fitter2.Error(fitter2.Fit()).Norm < 1e-48);
+            Assert.IsLessThan(1e-48, fitter1.Error(fitter1.Fit()).Norm);
+            Assert.IsLessThan(1e-48, fitter2.Error(fitter2.Fit()).Norm);
         }
 
         [TestMethod()]
@@ -33,8 +33,8 @@ namespace MultiPrecisionCurveFitting.Tests {
             PolynomialFitter<Pow2.N8> fitter1 = new(xs, ys1, 3);
             PolynomialFitter<Pow2.N8> fitter2 = new(xs, ys2, 3, intercept: 1);
 
-            Assert.IsTrue((fitter1.Fit(ws) - p1).Norm < 1e-48);
-            Assert.IsTrue((fitter2.Fit(ws) - p2).Norm < 1e-48);
+            Assert.IsLessThan(1e-48, (fitter1.Fit(ws) - p1).Norm);
+            Assert.IsLessThan(1e-48, (fitter2.Fit(ws) - p2).Norm);
         }
     }
 }
